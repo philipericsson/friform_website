@@ -1,44 +1,38 @@
-# Friform Website
+# sv
 
-Official website for Friform, a tech/design studio based in NYC.
+Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
 
-## Tech Stack
+## Creating a project
 
-- [SvelteKit](https://kit.svelte.dev/) - A framework for building web applications of all sizes
-- [SCSS](https://sass-lang.com/) - For styling with variables and mixins
-- [TypeScript](https://www.typescriptlang.org/) - For type safety
-
-## Development
-
-### Prerequisites
-
-- Node.js (v16+)
-- npm or pnpm
-
-### Setup
+If you're seeing this, you've probably already done this step. Congrats!
 
 ```bash
-# Install dependencies
-npm install
+# create a new project in the current directory
+npx sv create
 
-# Start development server
+# create a new project in my-app
+npx sv create my-app
+```
+
+## Developing
+
+Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+
+```bash
 npm run dev
 
-# Build for production
+# or start the server and open the app in a new browser tab
+npm run dev -- --open
+```
+
+## Building
+
+To create a production version of your app:
+
+```bash
 npm run build
 ```
 
-## Color Palette
+You can preview the production build with `npm run preview`.
 
-- Primary Yellow: #FFEE8C
-- Dark: #222222
-- Light: #FFFFFF
-- Gray: #F0F0F0
-
-## Project Structure
-
-- `/src` - Source code
-  - `/routes` - SvelteKit routes (pages)
-  - `/lib` - Shared components and utilities
-  - `/styles` - Global SCSS styles
-  - `/static` - Static assets (images, fonts)
+> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
