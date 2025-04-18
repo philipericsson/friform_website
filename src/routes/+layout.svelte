@@ -75,7 +75,7 @@
 	  <div class="flex flex-col md:flex-row justify-between">
 		<div class="mb-8 md:mb-0">
 		  <h3 class="text-xl font-bold mb-4">FRIFORM</h3>
-		  <p>A deep tech & design studio based in NYC</p>
+		  <p>A tech studio based in NYC</p>
 		</div>
 		<div>
 		  <h4 class="text-lg font-semibold mb-4">Contact</h4>
