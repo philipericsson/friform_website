@@ -16,7 +16,7 @@
         FRIFORM.
       </h1>
       <p class="text-xl md:text-2xl mb-12">
-        A technology studio bridging the gap between complex backends and exceptional UX.
+        Bridging the gap between complex backend and exceptional interface.
       </p>
       <a 
         href="/contact" 
