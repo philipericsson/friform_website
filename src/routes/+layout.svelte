@@ -5,20 +5,33 @@
 </script>
 
 <div class="min-h-screen bg-light">
-  <header class="container mx-auto py-8 px-4">
-	<nav class="flex justify-between items-center">
-	  <div class="text-2xl font-bold flex items-center">
-		<img src="/images/logo.png" alt="Friform Logo" class="h-10 mr-2" />
-		FRIFORM
-	  </div>
-	  <div class="hidden md:flex space-x-8">
-		<a href="/" class="hover:underline">Home</a>
-		<a href="/about" class="hover:underline">About</a>
-		<a href="/work" class="hover:underline">Work</a>
-		<a href="/contact" class="hover:underline">Contact</a>
-	  </div>
-	</nav>
+  <header class="fixed top-0 left-0 w-full bg-primary z-50">
+    <div class="container mx-auto py-2 px-4">
+      <nav class="flex items-center justify-between">
+        <!-- Left navigation -->
+        <div class="hidden md:flex space-x-8">
+          <a href="/" class="hover:underline font-medium">Home</a>
+          <a href="/about" class="hover:underline font-medium">About</a>
+        </div>
+        
+        <!-- Center logo -->
+        <div class="flex-1 flex justify-center">
+          <a href="/" class="text-2xl font-bold flex items-center hover:animate-spin-once cursor-pointer">
+            <img src="/images/logo.png" alt="Friform Logo" class="h-16" />
+          </a>
+        </div>
+        
+        <!-- Right navigation -->
+        <div class="hidden md:flex space-x-8">
+          <a href="/work" class="hover:underline font-medium">Work</a>
+          <a href="/contact" class="hover:underline font-medium">Contact</a>
+        </div>
+      </nav>
+    </div>
   </header>
+  
+  <!-- Spacer to prevent content from being hidden behind fixed header -->
+  <div class="h-20"></div>
   
   <main>
 	{@render children()}

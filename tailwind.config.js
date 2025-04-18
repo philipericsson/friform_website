@@ -4,7 +4,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: '#FFEE8C', // Your brand yellow
+        primary: '#ffe774', // Updated yellow to match logo more precisely
         dark: '#222222',
         light: '#FFFFFF',
         gray: '#F0F0F0'
@@ -25,6 +25,18 @@ export default {
             },
           },
         },
+      },
+      rotate: {
+        '360': '360deg',
+      },
+      animation: {
+        'spin-once': 'spin 0.7s linear 1',
+      },
+      keyframes: {
+        spin: {
+          from: { transform: 'rotate(0deg)' },
+          to: { transform: 'rotate(360deg)' },
+        }
       },
     },
   },
