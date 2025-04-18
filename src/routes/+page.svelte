@@ -8,7 +8,7 @@
 </svelte:head>
 
 <div class="bg-primary min-h-[80vh] flex items-center">
-  <div class="container mx-auto px-4">
+  <div class="container mx-auto px-4 pt-0">
     <div class="max-w-4xl">
       <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold mb-8">
         FRI.<br />
