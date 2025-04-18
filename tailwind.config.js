@@ -31,11 +31,16 @@ export default {
       },
       animation: {
         'spin-once': 'spin 0.7s linear 1',
+        'slideDown': 'slideDown 0.2s ease-out forwards',
       },
       keyframes: {
         spin: {
           from: { transform: 'rotate(0deg)' },
           to: { transform: 'rotate(360deg)' },
+        },
+        slideDown: {
+          '0%': { transform: 'translateY(-10px)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
         }
       },
     },

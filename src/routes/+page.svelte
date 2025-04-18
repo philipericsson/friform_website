@@ -16,7 +16,7 @@
         FRIFORM.
       </h1>
       <p class="text-xl md:text-2xl mb-12">
-        A technology studio bridging the gap between exceptional user experience and complex backends.
+        A technology studio bridging the gap between complex backends and exceptional UX.
       </p>
       <a 
         href="/contact" 
@@ -37,12 +37,12 @@
       
       <div class="grid md:grid-cols-2 gap-12 mt-20">
         <div>
-          <h3 class="text-2xl font-bold mb-4">Design</h3>
-          <p class="text-lg">Brand identity, UI/UX design, product design, and visual storytelling that captures your essence.</p>
-        </div>
-        <div>
           <h3 class="text-2xl font-bold mb-4">Development</h3>
           <p class="text-lg">AI-powered solutions, agent infrastructure, frontend integration, custom applications, and interactive experiences.</p>
+        </div>
+        <div>
+          <h3 class="text-2xl font-bold mb-4">Design</h3>
+          <p class="text-lg">Brand identity, UI/UX design, product design, and visual storytelling that captures your essence.</p>
         </div>
       </div>
     </div>

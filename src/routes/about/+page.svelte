@@ -10,11 +10,11 @@
       
       <div class="prose prose-lg max-w-none">
         <p>
-          Friform is a technology studio based in NYC. We merge form and function.
+          We merge form and function.
         </p>
         
         <p>
-          With expertise in software engineering, artificial intelligence, and design, Friform bridges the gap between exceptional user experience and complex backend systems.
+          With expertise in software engineering, artificial intelligence, and design—Friform bridges the gap between exceptional user experience and complex backend systems.
         </p>
       </div>
     </div>
