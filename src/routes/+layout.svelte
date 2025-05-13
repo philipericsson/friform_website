@@ -16,7 +16,7 @@
         <!-- Left navigation (desktop) -->
         <div class="hidden md:flex space-x-8">
           <a href="/" class="hover:underline font-medium">Home</a>
-          <a href="/about" class="hover:underline font-medium">About</a>
+          <a href="/work" class="hover:underline font-medium">Work</a>
         </div>
         
         <!-- Mobile menu button -->
@@ -39,7 +39,7 @@
         
         <!-- Right navigation (desktop) -->
         <div class="hidden md:flex space-x-8">
-          <a href="/work" class="hover:underline font-medium">Work</a>
+          <a href="/about" class="hover:underline font-medium">About</a>
           <a href="/contact" class="hover:underline font-medium">Contact</a>
         </div>
         
@@ -54,8 +54,8 @@
         <div class="container mx-auto py-4 px-4">
           <div class="flex flex-col space-y-4">
             <a href="/" class="hover:underline font-medium py-2" onclick={toggleMobileMenu}>Home</a>
-            <a href="/about" class="hover:underline font-medium py-2" onclick={toggleMobileMenu}>About</a>
             <a href="/work" class="hover:underline font-medium py-2" onclick={toggleMobileMenu}>Work</a>
+            <a href="/about" class="hover:underline font-medium py-2" onclick={toggleMobileMenu}>About</a>
             <a href="/contact" class="hover:underline font-medium py-2" onclick={toggleMobileMenu}>Contact</a>
           </div>
         </div>
@@ -83,7 +83,7 @@
 		</div>
 	  </div>
 	  <div class="mt-12 pt-6 border-t border-dark/20">
-		<p>&copy; {new Date().getFullYear()} Friform. All rights reserved.</p>
+		<p>&copy; {new Date().getFullYear()} Friform LLC. All rights reserved.</p>
 	  </div>
 	</div>
   </footer>

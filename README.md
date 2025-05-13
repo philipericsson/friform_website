@@ -1,6 +1,6 @@
 # Friform Website
 
-The official website for Friform, a deep tech & design studio based in NYC. This website showcases our work, philosophy, and services.
+The official website for Friform, a tech studio based in NYC. This website showcases our work, philosophy, and services.
 
 ## Technology Stack
 

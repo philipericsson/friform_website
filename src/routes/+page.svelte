@@ -3,7 +3,7 @@
 </script>
 
 <svelte:head>
-  <title>Friform | Tech & Design Studio</title>
+  <title>FRIFORM | Tech Studio</title>
   <meta name="description" content="Friform is a technology studio based in NYC">
 </svelte:head>
 
