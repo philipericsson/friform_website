@@ -22,6 +22,12 @@
   }
 
   onMount(() => {
+    // Get reCAPTCHA site key with fallback
+    const siteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY || data.recaptchaSiteKey;
+    
+    // Log reCAPTCHA site key for debugging
+    console.log('reCAPTCHA site key (onMount):', siteKey || 'missing');
+    
     // Load reCAPTCHA script
     const recaptchaScript = document.createElement('script');
     recaptchaScript.src = 'https://www.google.com/recaptcha/api.js';
@@ -30,7 +36,32 @@
     document.head.appendChild(recaptchaScript);
     
     recaptchaScript.onload = () => {
+      console.log('reCAPTCHA script loaded successfully');
       recaptchaLoaded = true;
+      
+      // Force render reCAPTCHA if it didn't render automatically
+      setTimeout(() => {
+        if (typeof window.grecaptcha !== 'undefined' && 
+            typeof window.grecaptcha.render === 'function') {
+          try {
+            const captchaContainer = document.querySelector('.g-recaptcha') as HTMLElement;
+            if (captchaContainer && !captchaContainer.innerHTML) {
+              console.log('Manually rendering reCAPTCHA with site key:', siteKey);
+              window.grecaptcha.render(captchaContainer, {
+                sitekey: siteKey,
+                callback: window.onRecaptchaVerified,
+                'expired-callback': window.onRecaptchaExpired
+              });
+            }
+          } catch (err) {
+            console.error('Error manually rendering reCAPTCHA:', err);
+          }
+        }
+      }, 1000);
+    };
+    
+    recaptchaScript.onerror = (error) => {
+      console.error('Error loading reCAPTCHA script:', error);
     };
     
     // Load EmailJS script
@@ -234,12 +265,17 @@
               
               <div class="mb-4">
                 {#if recaptchaLoaded}
+                  <!-- Using bind:this to get a reference to the container -->
                   <div 
                     class="g-recaptcha" 
-                    data-sitekey={data.recaptchaSiteKey}
+                    data-sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY || data.recaptchaSiteKey || ''}
                     data-callback="onRecaptchaVerified"
                     data-expired-callback="onRecaptchaExpired"
                   ></div>
+                  <!-- Debug info -->
+                  <div class="text-xs text-gray-400 mt-1">
+                    Site key available: {Boolean(import.meta.env.VITE_RECAPTCHA_SITE_KEY || data.recaptchaSiteKey) ? 'Yes' : 'No'}
+                  </div>
                 {:else}
                   <div class="p-4 bg-gray-100">Loading reCAPTCHA...</div>
                 {/if}
