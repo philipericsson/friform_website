@@ -13,6 +13,7 @@
     formData?: { name: string; email: string; message: string } 
   } | null = null;
   let recaptchaWidgetId: number | null = null;
+  let recaptchaContainer: HTMLElement | null = null;
 
   // Function to reset reCAPTCHA
   function resetRecaptcha() {
@@ -24,10 +25,12 @@
 
   // Define callback functions for reCAPTCHA
   const onRecaptchaVerified = () => {
+    console.log('reCAPTCHA verified successfully');
     submitDisabled = false;
   };
   
   const onRecaptchaExpired = () => {
+    console.log('reCAPTCHA verification expired');
     submitDisabled = true;
   };
   
@@ -35,6 +38,32 @@
     console.error('reCAPTCHA error occurred');
     submitDisabled = true;
   };
+
+  // Function to manually render reCAPTCHA
+  function renderRecaptcha(siteKey: string) {
+    if (!recaptchaContainer) {
+      console.error('reCAPTCHA container element not found');
+      return;
+    }
+    
+    if (typeof window.grecaptcha === 'undefined' || typeof window.grecaptcha.render !== 'function') {
+      console.error('grecaptcha.render is not available');
+      return;
+    }
+    
+    try {
+      console.log('Attempting to render reCAPTCHA in container:', recaptchaContainer);
+      recaptchaWidgetId = window.grecaptcha.render(recaptchaContainer, {
+        'sitekey': siteKey,
+        'callback': onRecaptchaVerified,
+        'expired-callback': onRecaptchaExpired,
+        'error-callback': onRecaptchaError
+      });
+      console.log('reCAPTCHA rendered with widget ID:', recaptchaWidgetId);
+    } catch (err) {
+      console.error('Error rendering reCAPTCHA:', err);
+    }
+  }
 
   onMount(() => {
     // Get reCAPTCHA site key with fallback
@@ -45,25 +74,18 @@
       return;
     }
     
+    console.log('Loading reCAPTCHA site key:', siteKey);
+    
     // Define onload callback for reCAPTCHA
     window.onRecaptchaLoad = () => {
       console.log('reCAPTCHA script loaded successfully');
       recaptchaLoaded = true;
       
-      try {
-        const captchaContainer = document.getElementById('recaptcha-container');
-        if (captchaContainer) {
-          recaptchaWidgetId = window.grecaptcha.render('recaptcha-container', {
-            'sitekey': siteKey,
-            'callback': onRecaptchaVerified,
-            'expired-callback': onRecaptchaExpired,
-            'error-callback': onRecaptchaError
-          });
-          console.log('reCAPTCHA rendered with widget ID:', recaptchaWidgetId);
-        }
-      } catch (err) {
-        console.error('Error rendering reCAPTCHA:', err);
-      }
+      // Wait for the next tick to ensure the container is in the DOM
+      setTimeout(() => {
+        recaptchaContainer = document.getElementById('recaptcha-container');
+        renderRecaptcha(siteKey);
+      }, 100);
     };
     
     // Load reCAPTCHA script with explicit rendering
@@ -116,6 +138,8 @@
     const recaptchaResponse = window.grecaptcha && recaptchaWidgetId !== null 
       ? window.grecaptcha.getResponse(recaptchaWidgetId) 
       : '';
+    
+    console.log('reCAPTCHA response token length:', recaptchaResponse.length);
     
     // Check if reCAPTCHA was completed
     if (!recaptchaResponse) {
@@ -279,15 +303,16 @@
               {/if}
               
               <div class="mb-4">
+                <label class="block mb-1">Verification</label>
                 {#if recaptchaLoaded}
-                  <!-- Container for explicit reCAPTCHA rendering -->
-                  <div id="recaptcha-container"></div>
+                  <!-- Container for explicit reCAPTCHA rendering with clear border -->
+                  <div id="recaptcha-container" class="border border-gray-300 p-2 inline-block min-h-[78px] bg-white"></div>
                   <!-- Debug info -->
                   <div class="text-xs text-gray-400 mt-1">
                     Site key available: {Boolean(import.meta.env.VITE_RECAPTCHA_SITE_KEY || data.recaptchaSiteKey) ? 'Yes' : 'No'}
                   </div>
                 {:else}
-                  <div class="p-4 bg-gray-100">Loading reCAPTCHA...</div>
+                  <div class="p-4 bg-gray-100 border border-gray-300">Loading reCAPTCHA verification...</div>
                 {/if}
               </div>
               
