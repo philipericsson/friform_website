@@ -17,25 +17,79 @@
 
   // Function to reset reCAPTCHA
   function resetRecaptcha() {
+    console.error('Resetting reCAPTCHA');
     if (typeof window.grecaptcha !== 'undefined' && window.grecaptcha.reset && recaptchaWidgetId !== null) {
       window.grecaptcha.reset(recaptchaWidgetId);
       submitDisabled = true;
+      
+      // Save current form values before resetting
+      const form = document.getElementById('contact-form') as HTMLFormElement;
+      if (form && formSubmitResult?.formData) {
+        // Do not clear form values on reCAPTCHA reset
+        const nameInput = form.querySelector('[name="from_name"]') as HTMLInputElement;
+        const emailInput = form.querySelector('[name="email"]') as HTMLInputElement;
+        const messageInput = form.querySelector('[name="message"]') as HTMLTextAreaElement;
+        
+        // Only update inputs if they already have values
+        if (nameInput && formSubmitResult.formData.name) {
+          nameInput.value = formSubmitResult.formData.name;
+        }
+        
+        if (emailInput && formSubmitResult.formData.email) {
+          emailInput.value = formSubmitResult.formData.email;
+        }
+        
+        if (messageInput && formSubmitResult.formData.message) {
+          messageInput.value = formSubmitResult.formData.message;
+        }
+      }
     }
   }
 
   // Define callback functions for reCAPTCHA
   const onRecaptchaVerified = () => {
-    console.log('reCAPTCHA verified successfully');
+    console.error('reCAPTCHA verification successful'); // Debug log
     submitDisabled = false;
+    
+    // Find the submit button and update its appearance
+    const submitButton = document.querySelector('button[type="submit"]') as HTMLButtonElement;
+    if (submitButton) {
+      submitButton.classList.remove('opacity-50', 'cursor-not-allowed');
+      submitButton.classList.add('hover:bg-opacity-90');
+    }
+    
+    // Store current form values to preserve them
+    const form = document.getElementById('contact-form') as HTMLFormElement;
+    if (form) {
+      const nameInput = form.querySelector('[name="from_name"]') as HTMLInputElement;
+      const emailInput = form.querySelector('[name="email"]') as HTMLInputElement;
+      const messageInput = form.querySelector('[name="message"]') as HTMLTextAreaElement;
+      
+      if (nameInput && emailInput && messageInput) {
+        formSubmitResult = {
+          success: false,
+          formData: {
+            name: nameInput.value,
+            email: emailInput.value,
+            message: messageInput.value
+          }
+        };
+      }
+    }
   };
   
   const onRecaptchaExpired = () => {
-    console.log('reCAPTCHA verification expired');
     submitDisabled = true;
+    
+    // Find the submit button and update its appearance
+    const submitButton = document.querySelector('button[type="submit"]') as HTMLButtonElement;
+    if (submitButton) {
+      submitButton.classList.add('opacity-50', 'cursor-not-allowed');
+      submitButton.classList.remove('hover:bg-opacity-90');
+    }
   };
   
   const onRecaptchaError = () => {
-    console.error('reCAPTCHA error occurred');
     submitDisabled = true;
   };
 
@@ -52,16 +106,16 @@
     }
     
     try {
-      console.log('Attempting to render reCAPTCHA in container:', recaptchaContainer);
       recaptchaWidgetId = window.grecaptcha.render(recaptchaContainer, {
         'sitekey': siteKey,
         'callback': onRecaptchaVerified,
         'expired-callback': onRecaptchaExpired,
-        'error-callback': onRecaptchaError
+        'error-callback': onRecaptchaError,
+        'size': 'normal',
+        'theme': 'light'
       });
-      console.log('reCAPTCHA rendered with widget ID:', recaptchaWidgetId);
     } catch (err) {
-      console.error('Error rendering reCAPTCHA:', err);
+      console.error('Error rendering reCAPTCHA');
     }
   }
 
@@ -74,19 +128,26 @@
       return;
     }
     
-    console.log('Loading reCAPTCHA site key:', siteKey);
-    
     // Define onload callback for reCAPTCHA
     window.onRecaptchaLoad = () => {
-      console.log('reCAPTCHA script loaded successfully');
       recaptchaLoaded = true;
       
       // Wait for the next tick to ensure the container is in the DOM
       setTimeout(() => {
         recaptchaContainer = document.getElementById('recaptcha-container');
+        if (!recaptchaContainer) {
+          console.error('reCAPTCHA container not found in DOM');
+          return;
+        }
         renderRecaptcha(siteKey);
       }, 100);
     };
+    
+    // Remove any existing reCAPTCHA scripts to avoid conflicts
+    const existingScript = document.querySelector('script[src*="recaptcha/api.js"]');
+    if (existingScript) {
+      document.head.removeChild(existingScript);
+    }
     
     // Load reCAPTCHA script with explicit rendering
     const recaptchaScript = document.createElement('script');
@@ -109,12 +170,11 @@
         // Check if emailjs is available
         if (typeof window.emailjs !== 'undefined') {
           window.emailjs.init(publicKey);
-          console.log('EmailJS initialized successfully');
         } else {
           console.error('EmailJS not available after script loaded');
         }
       } catch (error) {
-        console.error('Error initializing EmailJS:', error);
+        console.error('Error initializing EmailJS');
       }
     };
     
@@ -134,36 +194,50 @@
     const email = String(formData.get('email') || '');
     const message = String(formData.get('message') || '');
     
+    console.error('SendEmail function called with:', { name, email, messageLength: message.length });
+    
     // Get reCAPTCHA response token
     const recaptchaResponse = window.grecaptcha && recaptchaWidgetId !== null 
       ? window.grecaptcha.getResponse(recaptchaWidgetId) 
       : '';
     
-    console.log('reCAPTCHA response token length:', recaptchaResponse.length);
+    console.error('reCAPTCHA token length:', recaptchaResponse.length);
     
     // Check if reCAPTCHA was completed
     if (!recaptchaResponse) {
+      console.error('No reCAPTCHA response token found');
       return Promise.reject(new Error('Please complete the reCAPTCHA verification'));
     }
     
     try {
+      // Get EmailJS credentials from environment variables
+      const serviceId = String(import.meta.env.VITE_EMAILJS_SERVICE_ID);
+      const templateId = String(import.meta.env.VITE_EMAILJS_TEMPLATE_ID);
+      const publicKey = String(import.meta.env.VITE_EMAILJS_PUBLIC_KEY);
+      
+      console.error('Sending email with EmailJS', { 
+        hasServiceId: !!serviceId, 
+        hasTemplateId: !!templateId, 
+        hasPublicKey: !!publicKey 
+      });
+      
       // Send email using EmailJS with reCAPTCHA token
       const emailResponse = await window.emailjs.send(
-        String(import.meta.env.VITE_EMAILJS_SERVICE_ID),
-        String(import.meta.env.VITE_EMAILJS_TEMPLATE_ID),
+        serviceId,
+        templateId,
         {
           from_name: name,
           email: email,
           message: message,
           'g-recaptcha-response': recaptchaResponse
         },
-        String(import.meta.env.VITE_EMAILJS_PUBLIC_KEY)
+        publicKey
       );
       
-      console.log('Email sent successfully:', emailResponse);
+      console.error('EmailJS response:', emailResponse);
       return emailResponse;
     } catch (error) {
-      console.error('Error sending email:', error);
+      console.error('Error in sendEmail function:', error);
       throw error;
     }
   }
@@ -172,6 +246,31 @@
 <svelte:head>
   <title>Contact | FRIFORM</title>
   <meta name="description" content="Get in touch with Friform, a technology studio based in NYC">
+  <style>
+    /* Custom styling for reCAPTCHA to make it look better */
+    .grecaptcha-badge { 
+      visibility: hidden; 
+    }
+    
+    /* Remove default reCAPTCHA border and make it blend better */
+    #recaptcha-container iframe {
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    
+    /* Remove extra padding from reCAPTCHA */
+    #recaptcha-container div {
+      margin: 0 !important;
+    }
+    
+    /* Clean up reCAPTCHA styling */
+    .g-recaptcha {
+      transform: scale(0.97);
+      transform-origin: left top;
+      margin-bottom: -10px;
+    }
+  </style>
 </svelte:head>
 
 <div class="bg-light min-h-[60vh] flex items-center pt-12">
@@ -191,78 +290,156 @@
           <p class="mb-6">We'd love to hear from you. Fill out the form below and we'll get back to you as soon as possible.</p>
           
           {#if formSubmitResult?.success}
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-              <p>Thank you! Your message has been sent successfully.</p>
+            <div class="bg-primary border border-primary text-dark px-6 py-4 rounded-md mb-6 animate-slideDown">
+              <p class="font-medium text-lg">Thank you! Your message has been sent successfully.</p>
             </div>
           {:else}
             <form 
               class="space-y-4" 
+              id="contact-form"
               on:submit|preventDefault={(e) => {
+                // Debug log
+                console.error('Form submitted, checking validity');
+                
+                // Get the form element
+                const formElement = e.currentTarget;
+                
+                // Get field values directly
+                const nameInput = formElement.querySelector('[name="from_name"]') as HTMLInputElement;
+                const emailInput = formElement.querySelector('[name="email"]') as HTMLInputElement;
+                const messageInput = formElement.querySelector('[name="message"]') as HTMLTextAreaElement;
+                
+                const nameValue = nameInput?.value.trim() || '';
+                const emailValue = emailInput?.value.trim() || '';
+                const messageValue = messageInput?.value.trim() || '';
+                
+                console.error('Form fields:', {
+                  name: nameValue,
+                  email: emailValue,
+                  messageLength: messageValue.length
+                });
+                
+                // Check if form fields are filled
+                let hasErrors = false;
+                let errorMessage = '';
+                
+                if (!nameValue) {
+                  hasErrors = true;
+                  errorMessage = 'Please enter your name';
+                } else if (!emailValue) {
+                  hasErrors = true;
+                  errorMessage = 'Please enter your email address';
+                } else if (!messageValue) {
+                  hasErrors = true;
+                  errorMessage = 'Please enter your message';
+                } else if (submitDisabled) {
+                  // Check if reCAPTCHA is verified
+                  hasErrors = true;
+                  errorMessage = 'Please complete the verification by checking the reCAPTCHA box';
+                }
+                
+                // Show error message if validation fails
+                if (hasErrors) {
+                  console.error('Validation failed:', errorMessage);
+                  formSubmitResult = {
+                    success: false,
+                    error: errorMessage,
+                    formData: { name: nameValue, email: emailValue, message: messageValue }
+                  };
+                  return;
+                }
+                
+                console.error('Form validation passed, sending email');
+                
+                // Disable button while sending to prevent multiple submissions
+                const submitButton = formElement.querySelector('button[type="submit"]') as HTMLButtonElement;
+                if (submitButton) {
+                  submitButton.disabled = true;
+                  submitButton.textContent = 'Sending...';
+                }
+                
+                // Create FormData object manually
+                const formData = new FormData();
+                formData.append('from_name', nameValue);
+                formData.append('email', emailValue);
+                formData.append('message', messageValue);
+                
                 // Send email via EmailJS
-                sendEmail(new FormData(e.currentTarget), e.currentTarget)
-                  .then(() => {
+                sendEmail(formData, formElement)
+                  .then((response) => {
+                    console.error('Email sent successfully', response);
+                    
                     // Show success message
                     formSubmitResult = { 
                       success: true, 
                       message: 'Your message has been sent successfully!' 
                     };
                     
-                    // Reset form
-                    e.currentTarget.reset();
+                    // Only reset form AFTER successful submission - with a slight delay
+                    setTimeout(() => {
+                      console.error('Resetting form and reCAPTCHA after successful send');
+                      
+                      // First reset reCAPTCHA state
+                      if (typeof window.grecaptcha !== 'undefined' && window.grecaptcha.reset && recaptchaWidgetId !== null) {
+                        window.grecaptcha.reset(recaptchaWidgetId);
+                        submitDisabled = true;
+                      }
+                      
+                      // Then reset the form inputs
+                      formElement.reset();
+                    }, 500); // Added longer delay
                     
-                    // Reset reCAPTCHA
-                    resetRecaptcha();
+                    // Re-enable button
+                    if (submitButton) {
+                      submitButton.disabled = false;
+                      submitButton.textContent = 'Send Message';
+                    }
                   })
                   .catch((error: unknown) => {
-                    // Log detailed error
-                    console.error('EmailJS error details:', error);
+                    console.error('Error sending email', error);
                     
-                    // Try to extract more information from the error
+                    // Get error message
                     let errorMessage = 'Unknown error';
                     if (error instanceof Error) {
                       errorMessage = error.message;
-                      console.error('Error name:', error.name);
-                      console.error('Error stack:', error.stack);
-                    } else {
-                      console.error('Error type:', typeof error);
-                      console.error('Error stringified:', JSON.stringify(error));
+                      console.error('Error details:', errorMessage);
+                    } else if (typeof error === 'object' && error !== null && 'text' in error) {
+                      // Handle reCAPTCHA errors
+                      errorMessage = String(error.text);
+                      console.error('Error text:', errorMessage);
+                      
+                      if (errorMessage.includes('reCAPTCHA')) {
+                        errorMessage = 'reCAPTCHA verification failed. Please check the box again and try submitting.';
+                      }
                     }
                     
-                    // Reset reCAPTCHA
-                    resetRecaptcha();
-                    
-                    // If it's a reCAPTCHA error, show a more helpful message
-                    if (errorMessage.includes('reCAPTCHA') || 
-                        (typeof error === 'object' && error !== null && 'text' in error && 
-                         String(error.text).includes('reCAPTCHA'))) {
-                      errorMessage = 'reCAPTCHA verification failed. Please try the following:\n' +
-                                    '1. Check the reCAPTCHA box again\n' +
-                                    '2. Submit the form within 2 minutes of checking the box\n' +
-                                    '3. Try using a different browser or clearing cookies';
+                    // Just reset reCAPTCHA state but preserve form values
+                    if (typeof window.grecaptcha !== 'undefined' && window.grecaptcha.reset && recaptchaWidgetId !== null) {
+                      window.grecaptcha.reset(recaptchaWidgetId);
+                      submitDisabled = true;
                     }
                     
-                    // Store form data from the original submission
-                    const nameInput = e.currentTarget?.querySelector('[name="from_name"]') as HTMLInputElement;
-                    const emailInput = e.currentTarget?.querySelector('[name="email"]') as HTMLInputElement;
-                    const messageInput = e.currentTarget?.querySelector('[name="message"]') as HTMLTextAreaElement;
-                    
-                    const formNameValue = nameInput?.value || '';
-                    const formEmailValue = emailInput?.value || '';
-                    const formMessageValue = messageInput?.value || '';
-                    
-                    // Show error message with details
+                    // Show error message with details using stored form values
                     formSubmitResult = { 
                       success: false, 
                       error: `Failed to send email: ${errorMessage}`,
                       formData: { 
-                        name: formNameValue,
-                        email: formEmailValue,
-                        message: formMessageValue
+                        name: nameValue,
+                        email: emailValue,
+                        message: messageValue
                       }
                     };
+                    
+                    // Re-enable button
+                    if (submitButton) {
+                      submitButton.disabled = false;
+                      submitButton.textContent = 'Send Message';
+                    }
                   });
               }}
+              novalidate
             >
+              <!-- Prevent native browser validation to use our custom handling -->
               <div>
                 <label for="name" class="block mb-1">Name</label>
                 <input 
@@ -272,6 +449,7 @@
                   class="w-full p-2 border border-gray" 
                   value={formSubmitResult?.formData?.name || ''}
                   required
+                  data-lpignore="true"
                 />
               </div>
               <div>
@@ -283,6 +461,7 @@
                   class="w-full p-2 border border-gray" 
                   value={formSubmitResult?.formData?.email || ''}
                   required
+                  data-lpignore="true"
                 />
               </div>
               <div>
@@ -293,32 +472,28 @@
                   rows="4" 
                   class="w-full p-2 border border-gray"
                   required
+                  data-lpignore="true"
                 >{formSubmitResult?.formData?.message || ''}</textarea>
               </div>
               
               {#if formSubmitResult?.error}
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-                  <p>{formSubmitResult.error}</p>
+                <div class="bg-red-50 border border-red-300 text-red-800 px-6 py-4 rounded-md mb-6">
+                  <p class="font-medium">{formSubmitResult.error}</p>
                 </div>
               {/if}
               
-              <div class="mb-4">
-                <label class="block mb-1">Verification</label>
+              <div class="mb-6">
                 {#if recaptchaLoaded}
-                  <!-- Container for explicit reCAPTCHA rendering with clear border -->
-                  <div id="recaptcha-container" class="border border-gray-300 p-2 inline-block min-h-[78px] bg-white"></div>
-                  <!-- Debug info -->
-                  <div class="text-xs text-gray-400 mt-1">
-                    Site key available: {Boolean(import.meta.env.VITE_RECAPTCHA_SITE_KEY || data.recaptchaSiteKey) ? 'Yes' : 'No'}
-                  </div>
+                  <!-- Container for explicit reCAPTCHA rendering without border or label -->
+                  <div id="recaptcha-container" class="inline-block"></div>
                 {:else}
-                  <div class="p-4 bg-gray-100 border border-gray-300">Loading reCAPTCHA verification...</div>
+                  <div class="p-2 bg-gray-50 text-sm text-gray-500 animate-pulse">Loading verification...</div>
                 {/if}
               </div>
               
               <button 
                 type="submit" 
-                class="bg-dark text-white px-6 py-3 hover:bg-opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
+                class="bg-dark text-white px-6 py-3 transition-opacity duration-200 {submitDisabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-opacity-90'}"
                 disabled={submitDisabled}
               >
                 Send Message
