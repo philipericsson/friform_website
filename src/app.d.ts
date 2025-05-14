@@ -13,10 +13,12 @@ declare global {
 		emailjs: any;
 		onRecaptchaVerified: () => void;
 		onRecaptchaExpired: () => void;
+		onRecaptchaLoad: () => void;
 		grecaptcha: {
-			reset: () => void;
+			reset: (widgetId?: number) => void;
 			execute: () => void;
 			render: (container: string | HTMLElement, parameters: object) => number;
+			getResponse: (widgetId?: number) => string;
 		};
 	}
 }

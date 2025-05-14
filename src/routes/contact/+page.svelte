@@ -12,57 +12,66 @@
     error?: string; 
     formData?: { name: string; email: string; message: string } 
   } | null = null;
+  let recaptchaWidgetId: number | null = null;
 
   // Function to reset reCAPTCHA
   function resetRecaptcha() {
-    if (typeof window.grecaptcha !== 'undefined' && window.grecaptcha.reset) {
-      window.grecaptcha.reset();
+    if (typeof window.grecaptcha !== 'undefined' && window.grecaptcha.reset && recaptchaWidgetId !== null) {
+      window.grecaptcha.reset(recaptchaWidgetId);
       submitDisabled = true;
     }
   }
+
+  // Define callback functions for reCAPTCHA
+  const onRecaptchaVerified = () => {
+    submitDisabled = false;
+  };
+  
+  const onRecaptchaExpired = () => {
+    submitDisabled = true;
+  };
+  
+  const onRecaptchaError = () => {
+    console.error('reCAPTCHA error occurred');
+    submitDisabled = true;
+  };
 
   onMount(() => {
     // Get reCAPTCHA site key with fallback
     const siteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY || data.recaptchaSiteKey;
     
-    // Log reCAPTCHA site key for debugging
-    console.log('reCAPTCHA site key (onMount):', siteKey || 'missing');
+    if (!siteKey) {
+      console.error('reCAPTCHA site key is missing');
+      return;
+    }
     
-    // Load reCAPTCHA script
-    const recaptchaScript = document.createElement('script');
-    recaptchaScript.src = 'https://www.google.com/recaptcha/api.js';
-    recaptchaScript.async = true;
-    recaptchaScript.defer = true;
-    document.head.appendChild(recaptchaScript);
-    
-    recaptchaScript.onload = () => {
+    // Define onload callback for reCAPTCHA
+    window.onRecaptchaLoad = () => {
       console.log('reCAPTCHA script loaded successfully');
       recaptchaLoaded = true;
       
-      // Force render reCAPTCHA if it didn't render automatically
-      setTimeout(() => {
-        if (typeof window.grecaptcha !== 'undefined' && 
-            typeof window.grecaptcha.render === 'function') {
-          try {
-            const captchaContainer = document.querySelector('.g-recaptcha') as HTMLElement;
-            if (captchaContainer && !captchaContainer.innerHTML) {
-              console.log('Manually rendering reCAPTCHA with site key:', siteKey);
-              window.grecaptcha.render(captchaContainer, {
-                sitekey: siteKey,
-                callback: window.onRecaptchaVerified,
-                'expired-callback': window.onRecaptchaExpired
-              });
-            }
-          } catch (err) {
-            console.error('Error manually rendering reCAPTCHA:', err);
-          }
+      try {
+        const captchaContainer = document.getElementById('recaptcha-container');
+        if (captchaContainer) {
+          recaptchaWidgetId = window.grecaptcha.render('recaptcha-container', {
+            'sitekey': siteKey,
+            'callback': onRecaptchaVerified,
+            'expired-callback': onRecaptchaExpired,
+            'error-callback': onRecaptchaError
+          });
+          console.log('reCAPTCHA rendered with widget ID:', recaptchaWidgetId);
         }
-      }, 1000);
+      } catch (err) {
+        console.error('Error rendering reCAPTCHA:', err);
+      }
     };
     
-    recaptchaScript.onerror = (error) => {
-      console.error('Error loading reCAPTCHA script:', error);
-    };
+    // Load reCAPTCHA script with explicit rendering
+    const recaptchaScript = document.createElement('script');
+    recaptchaScript.src = 'https://www.google.com/recaptcha/api.js?onload=onRecaptchaLoad&render=explicit';
+    recaptchaScript.async = true;
+    recaptchaScript.defer = true;
+    document.head.appendChild(recaptchaScript);
     
     // Load EmailJS script
     const emailjsScript = document.createElement('script');
@@ -74,7 +83,6 @@
       // Initialize EmailJS with public key
       try {
         const publicKey = String(import.meta.env.VITE_EMAILJS_PUBLIC_KEY || '');
-        console.log('Initializing EmailJS with public key');
         
         // Check if emailjs is available
         if (typeof window.emailjs !== 'undefined') {
@@ -90,43 +98,50 @@
     
     // Clean up
     return () => {
-      document.head.removeChild(recaptchaScript);
+      if (document.head.contains(recaptchaScript)) {
+        document.head.removeChild(recaptchaScript);
+      }
       if (document.head.contains(emailjsScript)) {
         document.head.removeChild(emailjsScript);
       }
     };
   });
-  
-  // Define global functions for reCAPTCHA
-  window.onRecaptchaVerified = () => {
-    submitDisabled = false;
-  };
-  
-  window.onRecaptchaExpired = () => {
-    submitDisabled = true;
-  };
 
-  function sendEmail(formData: FormData, formElement: HTMLFormElement) {
-    const name = String(formData.get('name') || '');
+  async function sendEmail(formData: FormData, formElement: HTMLFormElement) {
+    const name = String(formData.get('from_name') || '');
     const email = String(formData.get('email') || '');
     const message = String(formData.get('message') || '');
     
-    // Log values for debugging (remove in production)
-    console.log('Sending email with:', {
-      name,
-      email,
-      message: message.substring(0, 20) + '...',
-      serviceId: import.meta.env.VITE_EMAILJS_SERVICE_ID,
-      templateId: import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
-      publicKey: import.meta.env.VITE_EMAILJS_PUBLIC_KEY ? 'Present' : 'Missing'
-    });
+    // Get reCAPTCHA response token
+    const recaptchaResponse = window.grecaptcha && recaptchaWidgetId !== null 
+      ? window.grecaptcha.getResponse(recaptchaWidgetId) 
+      : '';
     
-    // Send email with EmailJS's built-in reCAPTCHA integration
-    return window.emailjs.sendForm(
-      String(import.meta.env.VITE_EMAILJS_SERVICE_ID),
-      String(import.meta.env.VITE_EMAILJS_TEMPLATE_ID),
-      formElement
-    );
+    // Check if reCAPTCHA was completed
+    if (!recaptchaResponse) {
+      return Promise.reject(new Error('Please complete the reCAPTCHA verification'));
+    }
+    
+    try {
+      // Send email using EmailJS with reCAPTCHA token
+      const emailResponse = await window.emailjs.send(
+        String(import.meta.env.VITE_EMAILJS_SERVICE_ID),
+        String(import.meta.env.VITE_EMAILJS_TEMPLATE_ID),
+        {
+          from_name: name,
+          email: email,
+          message: message,
+          'g-recaptcha-response': recaptchaResponse
+        },
+        String(import.meta.env.VITE_EMAILJS_PUBLIC_KEY)
+      );
+      
+      console.log('Email sent successfully:', emailResponse);
+      return emailResponse;
+    } catch (error) {
+      console.error('Error sending email:', error);
+      throw error;
+    }
   }
 </script>
 
@@ -265,13 +280,8 @@
               
               <div class="mb-4">
                 {#if recaptchaLoaded}
-                  <!-- Using bind:this to get a reference to the container -->
-                  <div 
-                    class="g-recaptcha" 
-                    data-sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY || data.recaptchaSiteKey || ''}
-                    data-callback="onRecaptchaVerified"
-                    data-expired-callback="onRecaptchaExpired"
-                  ></div>
+                  <!-- Container for explicit reCAPTCHA rendering -->
+                  <div id="recaptcha-container"></div>
                   <!-- Debug info -->
                   <div class="text-xs text-gray-400 mt-1">
                     Site key available: {Boolean(import.meta.env.VITE_RECAPTCHA_SITE_KEY || data.recaptchaSiteKey) ? 'Yes' : 'No'}
