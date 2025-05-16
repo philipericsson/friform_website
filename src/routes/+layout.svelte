@@ -77,10 +77,6 @@
 		  <h3 class="text-xl font-bold mb-4">FRIFORM</h3>
 		  <p>A tech studio based in NYC</p>
 		</div>
-		<div>
-		  <h4 class="text-lg font-semibold mb-4">Contact</h4>
-		  <p>hello@friform.nyc</p>
-		</div>
 	  </div>
 	  <div class="mt-12 pt-6 border-t border-dark/20">
 		<p>&copy; {new Date().getFullYear()} Friform LLC. All rights reserved.</p>

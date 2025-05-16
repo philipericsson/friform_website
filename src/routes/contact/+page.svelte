@@ -215,8 +215,8 @@
       
       <div class="grid md:grid-cols-2 gap-12 mt-12">
         <div>
-          <h2 class="text-2xl font-bold mb-4">Contact information</h2>
-          <p class="mb-2">Email: hello@friform.nyc</p>
+          <h2 class="text-2xl font-bold mb-4">Need AI?</h2>
+          <p class="mb-4">We specialize in integrating AI agents and other deep tech solutions with minimalist design and brand integrity.</p>
           <p class="mb-2">Location: New York, NY</p>
         </div>
         
