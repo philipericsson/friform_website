@@ -1,6 +1,6 @@
 <svelte:head>
-  <title>About | Friform</title>
-  <meta name="description" content="About Friform, a tech/design studio based in NYC">
+  <title>About | FRIFORM</title>
+  <meta name="description" content="About Friform, a tech studio based in NYC">
 </svelte:head>
 
 <div class="bg-light min-h-[60vh] flex items-center pt-12">

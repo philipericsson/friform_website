@@ -1,5 +1,5 @@
 <svelte:head>
-  <title>Our Work | Friform</title>
+  <title>Our Work | FRIFORM</title>
   <meta name="description" content="Portfolio of work from Friform, a technology studio based in NYC">
 </svelte:head>
 
