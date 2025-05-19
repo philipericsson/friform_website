@@ -29,7 +29,7 @@
                   <span class="text-primary font-bold text-sm">01</span>
                 </div>
                 <div>
-                  <h3 class="font-bold">Focused Engineering</h3>
+                  <h3 class="font-bold">Engineering Expertise</h3>
                   <p class="text-gray-600 text-sm mt-1">Small team dedicated to your project's success</p>
                 </div>
               </div>
@@ -59,7 +59,7 @@
                   <span class="text-primary font-bold text-sm">04</span>
                 </div>
                 <div>
-                  <h3 class="font-bold">Tailored Solutions</h3>
+                  <h3 class="font-bold">Tailored Design</h3>
                   <p class="text-gray-600 text-sm mt-1">Custom approach for your needs</p>
                 </div>
               </div>
