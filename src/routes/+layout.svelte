@@ -33,7 +33,11 @@
         <!-- Center logo -->
         <div class="flex-1 flex justify-center">
           <a href="/" class="text-2xl font-bold flex items-center hover:animate-spin-once cursor-pointer">
-            <img src="/images/logo.png" alt="Friform Logo" class="h-16" />
+            <picture>
+              <source srcset="/images/optimized/mobile/logo.webp" media="(max-width: 767px)" type="image/webp">
+              <source srcset="/images/optimized/desktop/logo.webp" media="(min-width: 768px)" type="image/webp">
+              <img src="/images/logo.png" alt="Friform Logo" class="h-16" />
+            </picture>
           </a>
         </div>
         
