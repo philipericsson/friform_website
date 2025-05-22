@@ -42,7 +42,7 @@
         </div>
         <div>
           <h3 class="text-2xl font-bold mb-4">Design</h3>
-          <p class="text-lg">Minimalist UI/UX design, iterative prototyping, and functional aesthetics that captures your essence.</p>
+          <p class="text-lg">Minimalist UI/UX design, iterative prototyping, and functional aesthetics that capture your essence.</p>
         </div>
       </div>
       
