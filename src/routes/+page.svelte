@@ -70,16 +70,16 @@
             <img src="/images/optimized/desktop/killerwhale.webp" alt="AI Agents for Real Estate" class="w-full h-full object-cover">
           </picture>
           <h3 class="text-xl font-bold">AI Agents for Real Estate</h3>
-          <p>AI agent infrastructure aggregating Sweden's largest real estate websites to give recommendations.</p>
+          <p>Intelligent property recommendation engine aggregating Sweden's largest real estate websites through automated agent workflows.</p>
         </div>
         <div class="bg-light p-6">
           <picture class="block aspect-video mb-4">
             <source srcset="/images/optimized/mobile/cocktail-mobile.webp" media="(max-width: 767px)" type="image/webp">
             <source srcset="/images/optimized/desktop/cocktail.webp" media="(min-width: 768px)" type="image/webp">
-            <img src="/images/optimized/desktop/cocktail.webp" alt="Custom LLM Finetuning" class="w-full h-full object-cover">
+            <img src="/images/optimized/desktop/cocktail.webp" alt="Proprietary LLM Implementation" class="w-full h-full object-cover">
           </picture>
-          <h3 class="text-xl font-bold">Custom LLM Finetuning</h3>
-          <p>Offline, finetuned large language model at American research institution.</p>
+          <h3 class="text-xl font-bold">Proprietary LLM Implementation</h3>
+          <p>Offline fine-tuned language model development and optimization for academic research at leading American institution.</p>
         </div>
       </div>
       

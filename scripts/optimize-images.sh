@@ -17,7 +17,10 @@ optimize_image() {
 }
 
 # Process project images with optimal sizes
-for image in static/images/desktop/*.png static/images/desktop/*.jpg static/images/desktop/*.JPG; do
+for image in static/images/raw/*.png static/images/raw/*.jpg static/images/raw/*.JPG; do
+    # Skip if no matches found
+    [ -e "$image" ] || continue
+    
     base_name=$(basename "$image" .png)
     base_name=$(basename "$base_name" .jpg)
     base_name=$(basename "$base_name" .JPG)
@@ -28,6 +31,7 @@ for image in static/images/desktop/*.png static/images/desktop/*.jpg static/imag
     # Mobile version - 750px width (2x the display size for retina)
     optimize_image "$image" "static/images/optimized/mobile/${base_name}-mobile.webp" 90 750
 
+    echo "Processed: $base_name"
 done
 
 # Optimize logo
