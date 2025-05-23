@@ -83,7 +83,7 @@
 		</div>
 	  </div>
 	  <div class="mt-12 pt-6 border-t border-dark/20">
-		<p>&copy; {new Date().getFullYear()} Friform LLC. All rights reserved.</p>
+		<p>&copy; {new Date().getFullYear()} Friform. All rights reserved.</p>
 	  </div>
 	</div>
   </footer>
