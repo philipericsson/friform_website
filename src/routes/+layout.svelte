@@ -43,7 +43,6 @@
         
         <!-- Right navigation (desktop) -->
         <div class="hidden md:flex space-x-8">
-          <a href="/about" class="hover:underline font-medium">About</a>
           <a href="/contact" class="hover:underline font-medium">Contact</a>
         </div>
         
@@ -59,7 +58,6 @@
           <div class="flex flex-col space-y-4">
             <a href="/" class="hover:underline font-medium py-2" onclick={toggleMobileMenu}>Home</a>
             <a href="/work" class="hover:underline font-medium py-2" onclick={toggleMobileMenu}>Work</a>
-            <a href="/about" class="hover:underline font-medium py-2" onclick={toggleMobileMenu}>About</a>
             <a href="/contact" class="hover:underline font-medium py-2" onclick={toggleMobileMenu}>Contact</a>
           </div>
         </div>
