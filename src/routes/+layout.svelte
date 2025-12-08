@@ -14,11 +14,11 @@
     <div class="container mx-auto py-2 px-4">
       <nav class="flex items-center justify-between">
         <!-- Left navigation (desktop) -->
-        <div class="hidden md:flex space-x-8">
+        <div class="hidden md:flex space-x-8 flex-1">
           <a href="/" class="hover:underline font-medium">Home</a>
           <a href="/work" class="hover:underline font-medium">Work</a>
         </div>
-        
+
         <!-- Mobile menu button -->
         <button class="md:hidden text-dark p-2 focus:outline-none" onclick={toggleMobileMenu} aria-label="Toggle menu">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
@@ -29,7 +29,7 @@
             {/if}
           </svg>
         </button>
-        
+
         <!-- Center logo -->
         <div class="flex-1 flex justify-center">
           <a href="/" class="text-2xl font-bold flex items-center hover:animate-spin-once cursor-pointer">
@@ -40,12 +40,12 @@
             </picture>
           </a>
         </div>
-        
+
         <!-- Right navigation (desktop) -->
-        <div class="hidden md:flex space-x-8">
+        <div class="hidden md:flex space-x-8 flex-1 justify-end">
           <a href="/contact" class="hover:underline font-medium">Contact</a>
         </div>
-        
+
         <!-- Invisible placeholder on mobile to balance the hamburger menu -->
         <div class="md:hidden w-6"></div>
       </nav>
