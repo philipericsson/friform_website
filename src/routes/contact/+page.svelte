@@ -208,22 +208,25 @@
   </style>
 </svelte:head>
 
-<div class="bg-light min-h-[60vh] flex items-center pt-12">
+<div class="bg-primary min-h-[50vh] flex items-center">
+  <div class="container mx-auto px-4">
+    <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold">
+      GET IN<br />
+      TOUCH.
+    </h1>
+  </div>
+</div>
+
+<div class="bg-light py-24">
   <div class="container mx-auto px-4">
     <div class="max-w-4xl mx-auto">
-      <h1 class="text-4xl md:text-6xl font-bold mb-8">Get in touch</h1>
-      
-      <div class="grid md:grid-cols-2 gap-12 mt-12">
+      <div class="grid md:grid-cols-2 gap-12">
         <div>
-          <h2 class="text-2xl font-bold mb-4">Need AI?</h2>
-          <p class="mb-4">We specialize in integrating AI agents and other deep tech solutions with minimalist design and brand integrity.</p>
-          <p class="mb-2">Location: New York, NY</p>
+          <p class="text-lg mb-4">We specialize in integrating AI agents and other deep tech solutions with minimalist design and brand integrity.</p>
+          <p>New York, NY</p>
         </div>
-        
+
         <div>
-          <h2 class="text-2xl font-bold mb-4">Send us a message</h2>
-          <p class="mb-6">We'd love to hear from you. Fill out the form below and we'll get back to you as soon as possible.</p>
-          
           {#if formSubmitResult?.success}
             <div class="bg-primary border border-primary text-dark px-6 py-4 rounded-md mb-6 animate-slideDown">
               <p class="font-medium text-lg">Thank you! Your message has been sent successfully.</p>
