@@ -5,7 +5,10 @@ const config = {
 	preprocess: vitePreprocess(),
 	kit: { 
 		adapter: adapter({
-			fallback: 'index.html'
+			// Named 404.html (not index.html) so the SPA fallback doesn't overwrite
+			// the prerendered homepage, and so GitHub Pages serves it automatically
+			// for any route that isn't a static file (e.g. /contact).
+			fallback: '404.html'
 		})
 	}
 };

@@ -57,10 +57,13 @@
 <section class="py-24 bg-gray mb-[-5rem]">
   <div class="container mx-auto px-4">
     <div class="max-w-4xl mx-auto">
-      <h2 class="text-3xl md:text-5xl font-bold mb-16">
-        Recent work
+      <h2 class="text-3xl md:text-5xl font-bold mb-4">
+        Selected projects
       </h2>
-      
+      <p class="text-lg mb-16 max-w-2xl">
+        A mix of independent, academic, and professional work that shows how we think.
+      </p>
+
       <!-- Project showcases -->
       <div class="grid md:grid-cols-2 gap-8">
         <div class="bg-light p-6">
@@ -70,16 +73,16 @@
             <img src="/images/optimized/desktop/killerwhale.webp" alt="AI Agents for Real Estate" class="w-full h-full object-cover">
           </picture>
           <h3 class="text-xl font-bold">AI Agents for Real Estate</h3>
-          <p>Intelligent property recommendation engine aggregating Sweden's largest real estate websites through automated agent workflows.</p>
+          <p>Property recommendation engine aggregating Sweden's largest real estate sites through automated agent workflows.</p>
         </div>
         <div class="bg-light p-6">
           <picture class="block aspect-video mb-4">
             <source srcset="/images/optimized/mobile/cocktail-mobile.webp" media="(max-width: 767px)" type="image/webp">
             <source srcset="/images/optimized/desktop/cocktail.webp" media="(min-width: 768px)" type="image/webp">
-            <img src="/images/optimized/desktop/cocktail.webp" alt="Proprietary LLM Implementation" class="w-full h-full object-cover">
+            <img src="/images/optimized/desktop/cocktail.webp" alt="Fine-Tuned LLM Research" class="w-full h-full object-cover">
           </picture>
-          <h3 class="text-xl font-bold">Proprietary LLM Implementation</h3>
-          <p>Offline fine-tuned language model development and optimization for academic research at leading American institution.</p>
+          <h3 class="text-xl font-bold">Fine-Tuned LLM Research</h3>
+          <p>Fine-tuned a large language model on a proprietary dataset to study stylistic pattern transfer, completed as part of a graduate research project at Cornell.</p>
         </div>
       </div>
       
