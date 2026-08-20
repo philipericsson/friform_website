@@ -16,7 +16,7 @@
         FRIFORM.
       </h1>
       <p class="text-xl md:text-2xl mb-12">
-        Bridging the gap between complex backend and exceptional interface.
+        Deeply technical AI. Genuinely good design.
       </p>
       <a 
         href="/contact" 
@@ -27,32 +27,6 @@
     </div>
   </div>
 </div>
-
-<section class="py-24">
-  <div class="container mx-auto px-4">
-    <div class="max-w-4xl mx-auto">
-      <h2 class="text-3xl md:text-5xl font-bold mb-16">
-        We architect AI-powered systems with technical depth and design precision.
-      </h2>
-      
-      <div class="grid md:grid-cols-2 gap-12 mt-20">
-        <div>
-          <h3 class="text-2xl font-bold mb-4">Development</h3>
-          <p class="text-lg">Full stack integration of AI agent architecture, database solutions, and customized frontend.</p>
-        </div>
-        <div>
-          <h3 class="text-2xl font-bold mb-4">Design</h3>
-          <p class="text-lg">Minimalist UI/UX design, iterative prototyping, and functional aesthetics that capture your essence.</p>
-        </div>
-      </div>
-      
-      <div class="mt-24 pt-16 border-t border-dark/10">
-        <h3 class="text-2xl font-bold mb-4">Our Process</h3>
-        <p class="text-lg">We collaborate closely with you to transform your goals into clear technical specifications. We handle the implementation—you get a solution that works.</p>
-      </div>
-    </div>
-  </div>
-</section>
 
 <section class="py-24 bg-gray mb-[-5rem]">
   <div class="container mx-auto px-4">
