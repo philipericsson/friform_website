@@ -22,7 +22,7 @@
         href="/contact" 
         class="inline-block bg-dark text-white px-8 py-4 text-lg font-medium hover:bg-opacity-90 transition-all"
       >
-        Work with us
+        Get in touch
       </a>
     </div>
   </div>
@@ -57,12 +57,9 @@
 <section class="py-24 bg-gray mb-[-5rem]">
   <div class="container mx-auto px-4">
     <div class="max-w-4xl mx-auto">
-      <h2 class="text-3xl md:text-5xl font-bold mb-4">
+      <h2 class="text-3xl md:text-5xl font-bold mb-16">
         Selected projects
       </h2>
-      <p class="text-lg mb-16 max-w-2xl">
-        A mix of independent, academic, and professional work that shows how we think.
-      </p>
 
       <!-- Project showcases -->
       <div class="grid md:grid-cols-2 gap-8">
@@ -91,7 +88,7 @@
           href="/work" 
           class="inline-block border-2 border-dark px-8 py-4 text-lg font-medium hover:bg-dark hover:text-white transition-all"
         >
-          View all work
+          View more
         </a>
       </div>
     </div>
