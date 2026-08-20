@@ -6,10 +6,7 @@
 <div class="bg-light min-h-[60vh] flex items-center pt-12">
   <div class="container mx-auto px-4">
     <div class="max-w-4xl mx-auto">
-      <h1 class="text-4xl md:text-6xl font-bold mb-4">Selected Projects</h1>
-      <p class="text-lg mb-8 max-w-2xl">
-        A mix of independent, academic, and professional work that shows the range of problems we like to solve.
-      </p>
+      <h1 class="text-4xl md:text-6xl font-bold mb-16">Selected Projects</h1>
 
       <div class="grid md:grid-cols-2 gap-8 mt-12">
         <div class="bg-light p-6">
