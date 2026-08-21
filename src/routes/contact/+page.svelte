@@ -342,12 +342,19 @@
                     if (error instanceof Error) {
                       errorMessage = error.message;
                     } else if (typeof error === 'object' && error !== null && 'text' in error) {
-                      // Handle reCAPTCHA errors
-                      if (String(error.text).includes('reCAPTCHA')) {
-                        errorMessage = 'reCAPTCHA verification failed. Please check the box again and try submitting.';
-                      }
+                      // EmailJS errors have the shape { status, text }. Surface the
+                      // real text instead of discarding it when it's not a reCAPTCHA error.
+                      const text = String((error as { text: unknown }).text);
+                      errorMessage = text.includes('reCAPTCHA')
+                        ? 'reCAPTCHA verification failed. Please check the box again and try submitting.'
+                        : text;
+                    } else {
+                      // A rejection that's neither an Error nor an EmailJS {status, text}
+                      // object usually means the network request itself never completed
+                      // (e.g. blocked by an ad blocker, privacy extension, or DNS filter).
+                      errorMessage = 'The request to the email service was blocked before it could complete. This is usually an ad blocker, privacy extension, or DNS-level filter blocking requests to the email service specifically (separate from reCAPTCHA). Please disable it for this site and try again.';
                     }
-                    
+
                     // Reset reCAPTCHA but keep form data
                     resetRecaptcha();
                     
