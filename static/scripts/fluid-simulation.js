@@ -1316,6 +1316,15 @@ window.addEventListener('mouseup', () => {
     updatePointerUpData(pointers[0]);
 });
 
+// On touch-primary devices, dragging a finger across the canvas is how people
+// scroll the page. Capturing that gesture for the fluid effect (and blocking
+// the scroll with preventDefault) fights the single most basic interaction on
+// the page, so touch input is left alone entirely and native scroll always
+// wins. Mobile still gets the initial splat burst on load, it just won't
+// respond to touch after that.
+const isTouchPrimary = window.matchMedia('(pointer: coarse)').matches;
+
+if (!isTouchPrimary) {
 canvas.addEventListener('touchstart', e => {
     e.preventDefault();
     const touches = e.targetTouches;
@@ -1349,6 +1358,7 @@ window.addEventListener('touchend', e => {
         updatePointerUpData(pointer);
     }
 });
+}
 
 window.addEventListener('keydown', e => {
     if (e.code === 'KeyP')
