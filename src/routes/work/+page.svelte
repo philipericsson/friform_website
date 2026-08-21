@@ -31,7 +31,7 @@
           <picture class="block aspect-video mb-4">
             <source srcset="/images/optimized/mobile/hands-mobile.webp" media="(max-width: 767px)" type="image/webp">
             <source srcset="/images/optimized/desktop/hands.webp" media="(min-width: 768px)" type="image/webp">
-            <img src="/images/optimized/desktop/hands.webp" alt="Computer Vision Model Development" class="w-full h-full object-cover">
+            <img src="/images/optimized/desktop/hands.webp" alt="Computer Vision Model Development" class="w-full h-full object-cover object-[center_80%]">
           </picture>
           <h3 class="text-xl font-bold">Computer Vision Model Development</h3>
           <p>Hand-gesture frame extraction and dataset segmentation used to train a computer vision model for gesture recognition.</p>
