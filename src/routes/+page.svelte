@@ -1,52 +1,5 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-
-  let heroEl: HTMLDivElement;
-
-  const CALM_SPEED = 0.15;
-  const ACTIVE_SPEED = 1.6;
-  const IDLE_TIMEOUT_MS = 500;
-
-  onMount(() => {
-    let vantaEffect: { setOptions: (opts: Record<string, unknown>) => void; destroy: () => void } | null = null;
-    let idleTimer: ReturnType<typeof setTimeout>;
-
-    (async () => {
-      const THREE = await import('three');
-      window.THREE = THREE;
-      const WAVES = (await import('vanta/dist/vanta.waves.min')).default;
-
-      vantaEffect = WAVES({
-        el: heroEl,
-        THREE,
-        mouseControls: false,
-        touchControls: false,
-        gyroControls: false,
-        minHeight: 200,
-        minWidth: 200,
-        scale: 1.0,
-        scaleMobile: 1.0,
-        color: 0xffe774,
-        shininess: 40,
-        waveHeight: 15,
-        waveSpeed: CALM_SPEED,
-        zoom: 0.85
-      });
-
-      heroEl.addEventListener('mousemove', () => {
-        vantaEffect?.setOptions({ waveSpeed: ACTIVE_SPEED });
-        clearTimeout(idleTimer);
-        idleTimer = setTimeout(() => {
-          vantaEffect?.setOptions({ waveSpeed: CALM_SPEED });
-        }, IDLE_TIMEOUT_MS);
-      });
-    })();
-
-    return () => {
-      clearTimeout(idleTimer);
-      vantaEffect?.destroy();
-    };
-  });
+  // Add any necessary imports or logic here
 </script>
 
 <svelte:head>
@@ -54,7 +7,7 @@
   <meta name="description" content="Friform is a technology studio based in NYC">
 </svelte:head>
 
-<div bind:this={heroEl} class="hero-waves min-h-[80vh] flex items-center">
+<div class="bg-primary min-h-[80vh] flex items-center">
   <div class="container mx-auto px-4 pt-0">
     <div class="max-w-4xl">
       <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold mb-8">
@@ -115,16 +68,3 @@
     </div>
   </div>
 </section>
-
-<style>
-  .hero-waves {
-    position: relative;
-    z-index: 0;
-    background-color: #ffe774;
-  }
-
-  .hero-waves :global(.container) {
-    position: relative;
-    z-index: 1;
-  }
-</style>

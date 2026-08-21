@@ -20,7 +20,6 @@ declare global {
 			render: (container: string | HTMLElement, parameters: object) => number;
 			getResponse: (widgetId?: number) => string;
 		};
-		THREE: unknown;
 	}
 }
 
