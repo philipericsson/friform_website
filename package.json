@@ -21,6 +21,7 @@
 		"@sveltejs/kit": "^2.16.0",
 		"@sveltejs/vite-plugin-svelte": "^5.0.0",
 		"@tailwindcss/typography": "^0.5.16",
+		"@types/three": "^0.185.4",
 		"autoprefixer": "^10.4.21",
 		"eslint": "^9.18.0",
 		"eslint-config-prettier": "^10.0.1",
@@ -39,5 +40,9 @@
 	},
 	"overrides": {
 		"cookie": "^0.7.2"
+	},
+	"dependencies": {
+		"three": "^0.185.1",
+		"vanta": "^0.5.24"
 	}
 }
