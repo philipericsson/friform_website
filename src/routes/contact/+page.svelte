@@ -255,8 +255,8 @@
 
         <div>
           {#if formSubmitResult?.success}
-            <div class="bg-dark text-light px-6 py-4 rounded-md mb-6 animate-slideDown">
-              <p class="font-medium text-lg">Thank you! Your message has been sent successfully.</p>
+            <div class="bg-dark text-light px-6 py-4 mb-6 animate-slideDown">
+              <p class="font-medium text-lg">Message sent. We'll be in touch.</p>
             </div>
           {:else}
             <form 
