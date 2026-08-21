@@ -223,7 +223,10 @@
     <div class="max-w-4xl mx-auto">
       <div class="grid md:grid-cols-2 gap-12">
         <div>
-          <p class="text-lg mb-4">We specialize in integrating AI agents and other deep tech solutions with minimalist design and brand integrity.</p>
+          <div class="mb-4">
+            <p><span class="font-bold">Friform</span> <span class="italic opacity-60">[Swedish]</span></p>
+            <p class="italic">Having or being an irregular or asymmetrical shape or design.</p>
+          </div>
           <p>New York, NY</p>
         </div>
 
