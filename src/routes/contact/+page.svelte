@@ -208,9 +208,10 @@
   </style>
 </svelte:head>
 
-<div class="bg-primary min-h-[50vh] flex items-center">
-  <div class="container mx-auto px-4">
-    <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold">
+<div class="hero-nyc min-h-[50vh] flex items-center relative overflow-hidden">
+  <div class="hero-nyc-overlay absolute inset-0"></div>
+  <div class="container mx-auto px-4 relative">
+    <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold text-white">
       GET IN<br />
       TOUCH.
     </h1>
@@ -409,3 +410,21 @@
     </div>
   </div>
 </div>
+
+<style>
+  .hero-nyc {
+    background-image: url('/images/optimized/mobile/nyc-mobile.webp');
+    background-size: cover;
+    background-position: center;
+  }
+
+  @media (min-width: 768px) {
+    .hero-nyc {
+      background-image: url('/images/optimized/desktop/nyc.webp');
+    }
+  }
+
+  .hero-nyc-overlay {
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.35) 100%);
+  }
+</style>
