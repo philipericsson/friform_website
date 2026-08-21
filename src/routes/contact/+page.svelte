@@ -230,7 +230,7 @@
   </style>
 </svelte:head>
 
-<div class="hero-nyc min-h-[50vh] flex items-center relative overflow-hidden">
+<div class="hero-nyc min-h-[50svh] flex items-center relative overflow-hidden">
   <div class="hero-nyc-overlay absolute inset-0"></div>
   <div class="container mx-auto px-4 relative">
     <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold text-white">
