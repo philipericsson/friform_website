@@ -227,6 +227,7 @@
             <p><span class="font-bold">Friform</span> <span class="italic opacity-60">[Swedish]</span></p>
             <p class="italic">Having or being an irregular or asymmetrical shape or design.</p>
           </div>
+          <p class="mb-4">In 1933, Finnish architect Alvar Aalto and furniture maker Otto Korhonen solved a technical problem: how to bend solid wood into a leg cheap enough to mass-produce. Their solution, slicing the wood into thin strips and gluing it back together as it bent, became the L-leg, the foundation of Aalto's Stool 60, a design that hasn't needed to change in ninety years. That pairing, technical rigor and design worth living with, is the philosophy behind Friform.</p>
           <p>New York, NY</p>
         </div>
 
