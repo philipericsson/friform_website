@@ -1,16 +1,57 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import '../app.css';
 
 	let { children } = $props();
 	let mobileMenuOpen = $state(false);
+	let headerHidden = $state(false);
 
 	function toggleMobileMenu() {
 		mobileMenuOpen = !mobileMenuOpen;
 	}
+
+	onMount(() => {
+		const SHOW_NEAR_TOP = 80; // always show while this close to the top
+		const HIDE_THRESHOLD = 10; // ignore tiny scroll jitter
+
+		let lastScrollY = window.scrollY;
+		let ticking = false;
+
+		function handleScroll() {
+			const currentScrollY = window.scrollY;
+
+			if (mobileMenuOpen) {
+				lastScrollY = currentScrollY;
+				ticking = false;
+				return;
+			}
+
+			if (currentScrollY < SHOW_NEAR_TOP) {
+				headerHidden = false;
+			} else if (currentScrollY > lastScrollY + HIDE_THRESHOLD) {
+				headerHidden = true;
+			} else if (currentScrollY < lastScrollY - HIDE_THRESHOLD) {
+				headerHidden = false;
+			}
+
+			lastScrollY = currentScrollY;
+			ticking = false;
+		}
+
+		function onScroll() {
+			if (!ticking) {
+				requestAnimationFrame(handleScroll);
+				ticking = true;
+			}
+		}
+
+		window.addEventListener('scroll', onScroll, { passive: true });
+		return () => window.removeEventListener('scroll', onScroll);
+	});
 </script>
 
 <div class="min-h-screen bg-light">
-  <header class="fixed top-0 left-0 w-full z-50">
+  <header class="fixed top-0 left-0 w-full z-50 header-slide" class:header-hidden={headerHidden}>
     <div class="container mx-auto py-2 px-4">
       <nav class="flex items-center justify-between">
         <!-- Left navigation (desktop) -->
@@ -81,3 +122,14 @@
 	</div>
   </footer>
 </div>
+
+<style>
+  .header-slide {
+    transform: translateY(0);
+    transition: transform 0.3s ease;
+  }
+
+  .header-hidden {
+    transform: translateY(-100%);
+  }
+</style>
