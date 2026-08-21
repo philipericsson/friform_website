@@ -5,6 +5,7 @@
   export let data;
   
   let recaptchaLoaded = false;
+  let recaptchaLoadTimedOut = false;
   let submitDisabled = true;
   let formSubmitResult: { 
     success: boolean; 
@@ -77,15 +78,25 @@
   onMount(() => {
     // Get reCAPTCHA site key with fallback
     const siteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY || data.recaptchaSiteKey;
-    
+
     if (!siteKey) {
       return;
     }
-    
+
+    // Ad blockers / privacy extensions frequently block reCAPTCHA or the EmailJS
+    // CDN script outright. If it hasn't loaded within a few seconds, surface a
+    // clear message instead of leaving "Loading verification..." spinning forever.
+    const recaptchaTimeout = setTimeout(() => {
+      if (!recaptchaLoaded) {
+        recaptchaLoadTimedOut = true;
+      }
+    }, 6000);
+
     // Define onload callback for reCAPTCHA
     window.onRecaptchaLoad = () => {
+      clearTimeout(recaptchaTimeout);
       recaptchaLoaded = true;
-      
+
       // Wait for the next tick to ensure the container is in the DOM
       setTimeout(() => {
         recaptchaContainer = document.getElementById('recaptcha-container');
@@ -94,24 +105,30 @@
         }
       }, 100);
     };
-    
+
     // Remove any existing reCAPTCHA scripts to avoid conflicts
     const existingScript = document.querySelector('script[src*="recaptcha/api.js"]');
     if (existingScript) {
       document.head.removeChild(existingScript);
     }
-    
+
     // Load reCAPTCHA script with explicit rendering
     const recaptchaScript = document.createElement('script');
     recaptchaScript.src = 'https://www.google.com/recaptcha/api.js?onload=onRecaptchaLoad&render=explicit';
     recaptchaScript.async = true;
     recaptchaScript.defer = true;
+    recaptchaScript.onerror = () => {
+      recaptchaLoadTimedOut = true;
+    };
     document.head.appendChild(recaptchaScript);
     
     // Load EmailJS script
     const emailjsScript = document.createElement('script');
     emailjsScript.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js';
     emailjsScript.async = true;
+    emailjsScript.onerror = () => {
+      recaptchaLoadTimedOut = true;
+    };
     document.head.appendChild(emailjsScript);
     
     emailjsScript.onload = () => {
@@ -130,6 +147,7 @@
     
     // Clean up
     return () => {
+      clearTimeout(recaptchaTimeout);
       if (document.head.contains(recaptchaScript)) {
         document.head.removeChild(recaptchaScript);
       }
@@ -153,7 +171,11 @@
     if (!recaptchaResponse) {
       return Promise.reject(new Error('Please complete the reCAPTCHA verification'));
     }
-    
+
+    if (typeof window.emailjs === 'undefined') {
+      return Promise.reject(new Error('The email service failed to load. This is usually caused by an ad blocker or privacy extension, please disable it for this site and try again.'));
+    }
+
     try {
       // Get EmailJS credentials from environment variables
       const serviceId = String(import.meta.env.VITE_EMAILJS_SERVICE_ID);
@@ -395,6 +417,10 @@
                 {#if recaptchaLoaded}
                   <!-- Container for explicit reCAPTCHA rendering without border or label -->
                   <div id="recaptcha-container" class="inline-block"></div>
+                {:else if recaptchaLoadTimedOut}
+                  <div class="bg-red-50 border border-red-300 text-red-800 px-4 py-3 rounded-md text-sm max-w-sm">
+                    Verification failed to load. This is usually caused by an ad blocker or privacy extension. Please disable it for this site and reload the page.
+                  </div>
                 {:else}
                   <div class="p-2 bg-gray-50 text-sm text-gray-500 animate-pulse">Loading verification...</div>
                 {/if}

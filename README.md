@@ -39,10 +39,6 @@ npm run build
 - `/static/images/` - Image assets including the logo
 - `/src/app.css` - Global CSS styles
 
-## Contact
-
-For questions about this website, please contact hello@friform.nyc
-
 ## Version Strategy
 
 ### Version Format
