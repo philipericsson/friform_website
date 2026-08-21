@@ -11,12 +11,21 @@
       <div class="grid md:grid-cols-2 gap-8 mt-12">
         <div class="bg-light p-6">
           <picture class="block aspect-video mb-4">
-            <source srcset="/images/optimized/mobile/killerwhale-mobile.webp" media="(max-width: 767px)" type="image/webp">
-            <source srcset="/images/optimized/desktop/killerwhale.webp" media="(min-width: 768px)" type="image/webp">
-            <img src="/images/optimized/desktop/killerwhale.webp" alt="AI Agents for Real Estate" class="w-full h-full object-cover">
+            <source srcset="/images/optimized/mobile/coins-mobile.webp" media="(max-width: 767px)" type="image/webp">
+            <source srcset="/images/optimized/desktop/coins.webp" media="(min-width: 768px)" type="image/webp">
+            <img src="/images/optimized/desktop/coins.webp" alt="Custom Agentic AI" class="w-full h-full object-cover">
           </picture>
-          <h3 class="text-xl font-bold">AI Agents for Real Estate</h3>
-          <p>Property recommendation engine aggregating Sweden's largest real estate sites through automated agent workflows.</p>
+          <h3 class="text-xl font-bold">Custom Agentic AI</h3>
+          <p>Built custom network of AI agents plugging into Plaid and a proprietary database to turn raw financial data into real-time wealth management. Approved for App Store and spun out as standalone startup.</p>
+        </div>
+        <div class="bg-light p-6">
+          <picture class="block aspect-video mb-4">
+            <source srcset="/images/optimized/mobile/cocktail-mobile.webp" media="(max-width: 767px)" type="image/webp">
+            <source srcset="/images/optimized/desktop/cocktail.webp" media="(min-width: 768px)" type="image/webp">
+            <img src="/images/optimized/desktop/cocktail.webp" alt="LLM Finetuning" class="w-full h-full object-cover">
+          </picture>
+          <h3 class="text-xl font-bold">LLM Finetuning</h3>
+          <p>Fine-tuned an open-source LLM on a custom-built dataset to create a domain-specific model purpose-built for generating song lyrics.</p>
         </div>
         <div class="bg-light p-6">
           <picture class="block aspect-video mb-4">
@@ -38,12 +47,12 @@
         </div>
         <div class="bg-light p-6">
           <picture class="block aspect-video mb-4">
-            <source srcset="/images/optimized/mobile/cocktail-mobile.webp" media="(max-width: 767px)" type="image/webp">
-            <source srcset="/images/optimized/desktop/cocktail.webp" media="(min-width: 768px)" type="image/webp">
-            <img src="/images/optimized/desktop/cocktail.webp" alt="Fine-Tuned LLM Research" class="w-full h-full object-cover">
+            <source srcset="/images/optimized/mobile/homes-mobile.webp" media="(max-width: 767px)" type="image/webp">
+            <source srcset="/images/optimized/desktop/homes.webp" media="(min-width: 768px)" type="image/webp">
+            <img src="/images/optimized/desktop/homes.webp" alt="AI Agents for Real Estate" class="w-full h-full object-cover object-[center_25%]">
           </picture>
-          <h3 class="text-xl font-bold">Fine-Tuned LLM Research</h3>
-          <p>Fine-tuned a large language model on a proprietary dataset to study stylistic pattern transfer, completed as part of a graduate research project at Cornell.</p>
+          <h3 class="text-xl font-bold">AI Agents for Real Estate</h3>
+          <p>Property recommendation engine aggregating Sweden's largest real estate sites through automated agent workflows.</p>
         </div>
         <div class="bg-light p-6">
           <picture class="block aspect-video mb-4">
@@ -53,15 +62,6 @@
           </picture>
           <h3 class="text-xl font-bold">EV Fleet Management App</h3>
           <p>In-house infotainment and monitoring system built during a prior engineering role, replacing a third-party vendor platform.</p>
-        </div>
-        <div class="bg-light p-6">
-          <picture class="block aspect-video mb-4">
-            <source srcset="/images/optimized/mobile/mountains-mobile.webp" media="(max-width: 767px)" type="image/webp">
-            <source srcset="/images/optimized/desktop/mountains.webp" media="(min-width: 768px)" type="image/webp">
-            <img src="/images/optimized/desktop/mountains.webp" alt="Fintech AI Modeling" class="w-full h-full object-cover">
-          </picture>
-          <h3 class="text-xl font-bold">Fintech AI Modeling</h3>
-          <p>Machine learning models for credit risk assessment, comparing reject-inference methods as part of a graduate capstone project.</p>
         </div>
       </div>
     </div>
