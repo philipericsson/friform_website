@@ -23,13 +23,10 @@
   <div class="container mx-auto px-4 pt-0">
     <div class="max-w-4xl">
       <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold mb-8">
-        FRI.<br />
-        FORM.<br />
-        FRIFORM.
+        FREE.<br />
+        FORM. <span class="text-lg md:text-2xl lg:text-3xl font-normal italic opacity-50">[EN]</span><br />
+        FRIFORM. <span class="text-lg md:text-2xl lg:text-3xl font-normal italic opacity-50">[SV]</span>
       </h1>
-      <p class="text-xl md:text-2xl mb-12">
-        Deeply technical AI. Genuinely good design.
-      </p>
       <a
         href="/contact"
         class="inline-block bg-dark text-white px-8 py-4 text-lg font-medium hover:bg-opacity-90 transition-all"
@@ -44,7 +41,8 @@
   <div class="container mx-auto px-4">
     <div class="max-w-4xl mx-auto">
       <h2 class="text-3xl md:text-5xl font-bold mb-16">
-        Selected projects
+        Deeply technical AI.<br />
+        Genuinely good design.
       </h2>
 
       <!-- Project showcases -->
@@ -86,6 +84,8 @@
     position: relative;
     z-index: 0;
     overflow: hidden;
+    margin-top: -5rem;
+    padding-top: 5rem;
   }
 
   .fluid-canvas {
