@@ -1,5 +1,16 @@
 <script lang="ts">
-  // Add any necessary imports or logic here
+  import { onMount } from 'svelte';
+
+  onMount(() => {
+    const script = document.createElement('script');
+    script.src = '/scripts/fluid-simulation.js';
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+      (window as any).__friformFluidActive = false;
+    };
+  });
 </script>
 
 <svelte:head>
@@ -7,7 +18,8 @@
   <meta name="description" content="Friform is a technology studio based in NYC">
 </svelte:head>
 
-<div class="bg-primary min-h-[80vh] flex items-center">
+<div class="hero-fluid bg-light min-h-[80vh] flex items-center">
+  <canvas id="fluid-canvas" class="fluid-canvas"></canvas>
   <div class="container mx-auto px-4 pt-0">
     <div class="max-w-4xl">
       <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold mb-8">
@@ -18,8 +30,8 @@
       <p class="text-xl md:text-2xl mb-12">
         Deeply technical AI. Genuinely good design.
       </p>
-      <a 
-        href="/contact" 
+      <a
+        href="/contact"
         class="inline-block bg-dark text-white px-8 py-4 text-lg font-medium hover:bg-opacity-90 transition-all"
       >
         Get in touch
@@ -68,3 +80,30 @@
     </div>
   </div>
 </section>
+
+<style>
+  .hero-fluid {
+    position: relative;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .fluid-canvas {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .hero-fluid :global(.container) {
+    position: relative;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .hero-fluid :global(.container a) {
+    pointer-events: auto;
+  }
+</style>
