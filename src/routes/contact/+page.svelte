@@ -208,9 +208,10 @@
   </style>
 </svelte:head>
 
-<div class="bg-primary min-h-[50vh] flex items-center">
-  <div class="container mx-auto px-4">
-    <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold">
+<div class="hero-nyc min-h-[50vh] flex items-center relative overflow-hidden">
+  <div class="hero-nyc-overlay absolute inset-0"></div>
+  <div class="container mx-auto px-4 relative">
+    <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold text-white">
       GET IN<br />
       TOUCH.
     </h1>
@@ -222,13 +223,17 @@
     <div class="max-w-4xl mx-auto">
       <div class="grid md:grid-cols-2 gap-12">
         <div>
-          <p class="text-lg mb-4">We specialize in integrating AI agents and other deep tech solutions with minimalist design and brand integrity.</p>
+          <div class="mb-4">
+            <p><span class="font-bold">Friform</span> <span class="italic opacity-60">[Swedish]</span></p>
+            <p class="italic">Having or being an irregular or asymmetrical shape or design.</p>
+          </div>
+          <p class="mb-4">In 1933, Finnish architect Alvar Aalto and furniture maker Otto Korhonen solved a technical problem: how to bend solid wood into a leg cheap enough to mass-produce. Their solution, slicing the wood into thin strips and gluing it back together as it bent, became the L-leg, the foundation of Aalto's Stool 60, a design that hasn't needed to change in ninety years. That pairing, technical rigor and design worth living with, is so central to Friform's philosophy that we built our logo around it.</p>
           <p>New York, NY</p>
         </div>
 
         <div>
           {#if formSubmitResult?.success}
-            <div class="bg-primary border border-primary text-dark px-6 py-4 rounded-md mb-6 animate-slideDown">
+            <div class="bg-dark text-light px-6 py-4 rounded-md mb-6 animate-slideDown">
               <p class="font-medium text-lg">Thank you! Your message has been sent successfully.</p>
             </div>
           {:else}
@@ -409,3 +414,21 @@
     </div>
   </div>
 </div>
+
+<style>
+  .hero-nyc {
+    background-image: url('/images/optimized/mobile/nyc-mobile.webp');
+    background-size: cover;
+    background-position: center;
+  }
+
+  @media (min-width: 768px) {
+    .hero-nyc {
+      background-image: url('/images/optimized/desktop/nyc.webp');
+    }
+  }
+
+  .hero-nyc-overlay {
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.35) 100%);
+  }
+</style>
