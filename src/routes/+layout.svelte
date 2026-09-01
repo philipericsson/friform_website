@@ -270,8 +270,12 @@
   .nav-link:hover,
   .nav-link-current {
     text-decoration: underline;
-    text-decoration-thickness: 0.045em;
-    text-underline-offset: 0.1em;
+    /* The menu's 0.045em lands on 1px here, the thinnest a browser can draw, so
+       the rule reads as a hairline rather than a mark. 0.0833em puts the nav on
+       the same rendered 2px as the menu, and renders identically on 1x and 2x
+       displays where 1.5px would round unpredictably. */
+    text-decoration-thickness: 0.0833em;
+    text-underline-offset: 0.15em;
   }
 
   .mobile-menu {
