@@ -166,10 +166,18 @@
   <header bind:this={headerEl} class="fixed top-0 left-0 w-full z-50 header-slide" class:header-hidden={headerHidden}>
     <div class="container mx-auto py-2 px-4">
       <nav class="flex items-center justify-between">
-        <!-- Left navigation (desktop) -->
-        <div class="hidden md:flex space-x-8 flex-1">
-          <a href="/" class="hover:underline font-medium">Home</a>
-          <a href="/work" class="hover:underline font-medium">Work</a>
+        <!-- Desktop navigation: one group on the left, the logo alone on the right -->
+        <div class="hidden md:flex space-x-8">
+          {#each navLinks as link (link.href)}
+            <a
+              href={link.href}
+              class="nav-link text-2xl font-medium tracking-[-0.02em]"
+              class:nav-link-current={isCurrent(link.href)}
+              aria-current={isCurrent(link.href) ? 'page' : undefined}
+            >
+              {link.label}
+            </a>
+          {/each}
         </div>
 
         <!-- Mobile menu button -->
@@ -190,8 +198,8 @@
           </svg>
         </button>
 
-        <!-- Logo: right-aligned on mobile, centered from md up -->
-        <div class="flex-1 flex justify-end md:justify-center">
+        <!-- Logo sits at the right edge at every breakpoint -->
+        <div class="flex justify-end">
           <a href="/" class="flex items-center cursor-pointer" aria-label="Friform home">
             <picture>
               <source srcset="/images/optimized/mobile/logo.webp" media="(max-width: 767px)" type="image/webp">
@@ -200,11 +208,6 @@
             </picture>
             <span class="logo-wordmark text-2xl font-bold tracking-tight" class:logo-wordmark-collapsed={logoCollapsed && !mobileMenuOpen}>FRIFORM</span>
           </a>
-        </div>
-
-        <!-- Right navigation (desktop) -->
-        <div class="hidden md:flex space-x-8 flex-1 justify-end">
-          <a href="/contact" class="hover:underline font-medium">Contact</a>
         </div>
       </nav>
     </div>
@@ -258,6 +261,17 @@
     min-width: 2.75rem;
     min-height: 2.75rem;
     margin-left: -0.5rem;
+  }
+
+  .nav-link {
+    text-decoration: none;
+  }
+
+  .nav-link:hover,
+  .nav-link-current {
+    text-decoration: underline;
+    text-decoration-thickness: 0.045em;
+    text-underline-offset: 0.1em;
   }
 
   .mobile-menu {
@@ -357,5 +371,15 @@
     max-width: 0;
     margin-left: 0;
     opacity: 0;
+  }
+
+  /* No menu to open on desktop, so the wordmark would never come back once it
+     collapsed. Above md it simply stays out, holding the right corner. */
+  @media (min-width: 768px) {
+    .logo-wordmark-collapsed {
+      max-width: 12rem;
+      margin-left: 0.6rem;
+      opacity: 1;
+    }
   }
 </style>
