@@ -43,6 +43,19 @@ let config = {
     CURL: 30,
     SPLAT_RADIUS: 0.25,
     SPLAT_FORCE: 6000,
+    // Pointer marks are finer than the opening burst's, and are capped so
+    // repeated marks on one spot saturate to their colour instead of climbing
+    // past white. The burst stays uncapped so the load animation is unchanged.
+    POINTER_SPLAT_RADIUS: 0.12,
+    POINTER_DYE_CEILING: 1.0,
+    // Hover paints; holding the button pushes harder.
+    HOVER_FORCE: 0.35,
+    // Distance between marks along a stroke, in uv units. Mark density follows
+    // distance travelled rather than mouse event rate.
+    SPLAT_SPACING: 0.015,
+    MAX_SPLATS_PER_FRAME: 12,
+    // A stroke keeps one colour; a new one is picked only after a pause.
+    COLOR_IDLE_TIMEOUT: 250,
     SHADING: true,
     COLORFUL: true,
     COLOR_UPDATE_SPEED: 10,
@@ -70,8 +83,16 @@ function pointerPrototype () {
     this.deltaY = 0;
     this.down = false;
     this.moved = false;
+    this.onCanvas = false;
+    // Where the last mark was placed. Distance is measured from here, so
+    // movement smaller than SPLAT_SPACING accumulates instead of being dropped.
+    this.splatX = 0;
+    this.splatY = 0;
+    this.lastMoveTime = 0;
     this.color = [30, 0, 300];
 }
+
+const UNCLAMPED = 1.0e6;
 
 let pointers = [];
 let splatStack = [];
@@ -567,13 +588,19 @@ const splatShader = compileShader(gl.FRAGMENT_SHADER, `
     uniform vec3 color;
     uniform vec2 point;
     uniform float radius;
+    uniform float maxValue;
 
     void main () {
         vec2 p = vUv - point.xy;
         p.x *= aspectRatio;
         vec3 splat = exp(-dot(p, p) / radius) * color;
         vec3 base = texture2D(uTarget, vUv).xyz;
-        gl_FragColor = vec4(base + splat, 1.0);
+        // Add only into the headroom below maxValue. Repeated marks on one spot
+        // then saturate to their colour rather than climbing every channel past
+        // 1.0, which is what turned the core white. Never subtracts, so marks
+        // laid over a brighter area leave it alone.
+        vec3 headroom = max(vec3(0.0), vec3(maxValue) - base);
+        gl_FragColor = vec4(base + min(splat, headroom), 1.0);
     }
 `);
 
@@ -1042,12 +1069,17 @@ function updateColors (dt) {
     if (!config.COLORFUL) return;
 
     colorUpdateTimer += dt * config.COLOR_UPDATE_SPEED;
-    if (colorUpdateTimer >= 1) {
-        colorUpdateTimer = wrap(colorUpdateTimer, 0, 1);
-        pointers.forEach(p => {
+    if (colorUpdateTimer < 1) return;
+    colorUpdateTimer = wrap(colorUpdateTimer, 0, 1);
+
+    // Only recolour between strokes. Changing hue mid-stroke was what made
+    // successive additive marks sum across all three channels toward white,
+    // and the ~10Hz change rate was the flicker.
+    const now = Date.now();
+    pointers.forEach(p => {
+        if (now - p.lastMoveTime > config.COLOR_IDLE_TIMEOUT)
             p.color = generateColor();
-        });
-    }
+    });
 }
 
 function applyInputs () {
@@ -1253,9 +1285,59 @@ function blur (target, temp, iterations) {
 }
 
 function splatPointer (pointer) {
-    let dx = pointer.deltaX * config.SPLAT_FORCE;
-    let dy = pointer.deltaY * config.SPLAT_FORCE;
-    splat(pointer.texcoordX, pointer.texcoordY, dx, dy, pointer.color);
+    const aspectRatio = canvas.width / canvas.height;
+    // Hover paints gently; pressing the button drives the fluid at full force.
+    const force = config.SPLAT_FORCE * (pointer.down ? 1.0 : config.HOVER_FORCE);
+    const dx = pointer.deltaX * force;
+    const dy = pointer.deltaY * force;
+
+    const fromX = pointer.splatX;
+    const fromY = pointer.splatY;
+    const toX = pointer.texcoordX;
+    const toY = pointer.texcoordY;
+
+    const travelX = (toX - fromX) * aspectRatio;
+    const travelY = toY - fromY;
+    const distance = Math.sqrt(travelX * travelX + travelY * travelY);
+
+    // Below one step, leave the anchor where it is so the distance carries over
+    // to the next frame. Slow movement therefore lays marks at the same spacing
+    // as fast movement instead of piling them onto one spot.
+    if (distance < config.SPLAT_SPACING) return;
+
+    const steps = Math.min(
+        Math.floor(distance / config.SPLAT_SPACING),
+        config.MAX_SPLATS_PER_FRAME
+    );
+    for (let i = 1; i <= steps; i++) {
+        const t = i / steps;
+        splat(
+            fromX + (toX - fromX) * t,
+            fromY + (toY - fromY) * t,
+            dx, dy, pointer.color,
+            config.POINTER_SPLAT_RADIUS,
+            config.POINTER_DYE_CEILING
+        );
+    }
+
+    pointer.splatX = toX;
+    pointer.splatY = toY;
+}
+
+// Anchor every position field to one point, used when a stroke starts or when
+// the cursor re-enters, so no stale previous position leaks into the delta.
+function anchorPointer (pointer, posX, posY) {
+    pointer.texcoordX = posX / canvas.width;
+    pointer.texcoordY = 1.0 - posY / canvas.height;
+    pointer.prevTexcoordX = pointer.texcoordX;
+    pointer.prevTexcoordY = pointer.texcoordY;
+    pointer.splatX = pointer.texcoordX;
+    pointer.splatY = pointer.texcoordY;
+    pointer.deltaX = 0;
+    pointer.deltaY = 0;
+    pointer.moved = false;
+    pointer.onCanvas = true;
+    pointer.lastMoveTime = Date.now();
 }
 
 function multipleSplats (amount) {
@@ -1272,18 +1354,20 @@ function multipleSplats (amount) {
     }
 }
 
-function splat (x, y, dx, dy, color) {
+function splat (x, y, dx, dy, color, radius = config.SPLAT_RADIUS, dyeCeiling = UNCLAMPED) {
     splatProgram.bind();
     gl.uniform1i(splatProgram.uniforms.uTarget, velocity.read.attach(0));
     gl.uniform1f(splatProgram.uniforms.aspectRatio, canvas.width / canvas.height);
     gl.uniform2f(splatProgram.uniforms.point, x, y);
     gl.uniform3f(splatProgram.uniforms.color, dx, dy, 0.0);
-    gl.uniform1f(splatProgram.uniforms.radius, correctRadius(config.SPLAT_RADIUS / 100.0));
+    gl.uniform1f(splatProgram.uniforms.radius, correctRadius(radius / 100.0));
+    gl.uniform1f(splatProgram.uniforms.maxValue, UNCLAMPED);
     blit(velocity.write);
     velocity.swap();
 
     gl.uniform1i(splatProgram.uniforms.uTarget, dye.read.attach(0));
     gl.uniform3f(splatProgram.uniforms.color, color.r, color.g, color.b);
+    gl.uniform1f(splatProgram.uniforms.maxValue, dyeCeiling);
     blit(dye.write);
     dye.swap();
 }
@@ -1295,26 +1379,64 @@ function correctRadius (radius) {
     return radius;
 }
 
-canvas.addEventListener('mousedown', e => {
-    let posX = scaleByPixelRatio(e.offsetX);
-    let posY = scaleByPixelRatio(e.offsetY);
-    let pointer = pointers.find(p => p.id == -1);
-    if (pointer == null)
-        pointer = new pointerPrototype();
-    updatePointerDownData(pointer, -1, posX, posY);
+const isTouchPrimaryDevice = window.matchMedia('(pointer: coarse)').matches;
+
+// Listening on the hero rather than the canvas: the headline's call-to-action
+// sits above the canvas with pointer-events enabled, and binding to the canvas
+// left a dead rectangle there. Events from it still bubble to the hero.
+const hoverSurface = canvas.parentElement || canvas;
+
+function pointerPositionFromEvent (e) {
+    // Measured against the canvas rect rather than offsetX/offsetY, which are
+    // relative to whatever element was actually hit.
+    const rect = canvas.getBoundingClientRect();
+    return {
+        x: scaleByPixelRatio(e.clientX - rect.left),
+        y: scaleByPixelRatio(e.clientY - rect.top)
+    };
+}
+
+// Touch devices synthesise mouse events for taps. The burst-only decision below
+// is deliberate, so keep pointer painting off them entirely rather than letting
+// an emulated tap draw.
+if (!isTouchPrimaryDevice) {
+hoverSurface.addEventListener('mousemove', e => {
+    const pointer = pointers[0];
+    const pos = pointerPositionFromEvent(e);
+
+    // First move after entering: start the stroke here. Without this, coming
+    // back onto the hero mid-gesture measured the delta against the position
+    // where the cursor left, injecting one enormous velocity spike.
+    if (!pointer.onCanvas) {
+        anchorPointer(pointer, pos.x, pos.y);
+        pointer.color = generateColor();
+        return;
+    }
+
+    updatePointerMoveData(pointer, pos.x, pos.y);
 });
 
-canvas.addEventListener('mousemove', e => {
-    let pointer = pointers[0];
-    if (!pointer.down) return;
-    let posX = scaleByPixelRatio(e.offsetX);
-    let posY = scaleByPixelRatio(e.offsetY);
-    updatePointerMoveData(pointer, posX, posY);
+hoverSurface.addEventListener('mouseleave', () => {
+    pointers[0].onCanvas = false;
+    pointers[0].moved = false;
+});
+
+hoverSurface.addEventListener('mousedown', e => {
+    const pointer = pointers[0];
+    const pos = pointerPositionFromEvent(e);
+    anchorPointer(pointer, pos.x, pos.y);
+    pointer.down = true;
+    pointer.color = generateColor();
+    // A click without a drag used to produce nothing at all, because a splat
+    // was only emitted once a delta existed. Leave a mark for it.
+    splat(pointer.texcoordX, pointer.texcoordY, 0, 0, pointer.color,
+          config.POINTER_SPLAT_RADIUS, config.POINTER_DYE_CEILING);
 });
 
 window.addEventListener('mouseup', () => {
     updatePointerUpData(pointers[0]);
 });
+}
 
 // On touch-primary devices, dragging a finger across the canvas is how people
 // scroll the page. Capturing that gesture for the fluid effect (and blocking
@@ -1322,9 +1444,7 @@ window.addEventListener('mouseup', () => {
 // the page, so touch input is left alone entirely and native scroll always
 // wins. Mobile still gets the initial splat burst on load, it just won't
 // respond to touch after that.
-const isTouchPrimary = window.matchMedia('(pointer: coarse)').matches;
-
-if (!isTouchPrimary) {
+if (!isTouchPrimaryDevice) {
 canvas.addEventListener('touchstart', e => {
     e.preventDefault();
     const touches = e.targetTouches;
@@ -1369,14 +1489,8 @@ window.addEventListener('keydown', e => {
 
 function updatePointerDownData (pointer, id, posX, posY) {
     pointer.id = id;
+    anchorPointer(pointer, posX, posY);
     pointer.down = true;
-    pointer.moved = false;
-    pointer.texcoordX = posX / canvas.width;
-    pointer.texcoordY = 1.0 - posY / canvas.height;
-    pointer.prevTexcoordX = pointer.texcoordX;
-    pointer.prevTexcoordY = pointer.texcoordY;
-    pointer.deltaX = 0;
-    pointer.deltaY = 0;
     pointer.color = generateColor();
 }
 
@@ -1388,6 +1502,7 @@ function updatePointerMoveData (pointer, posX, posY) {
     pointer.deltaX = correctDeltaX(pointer.texcoordX - pointer.prevTexcoordX);
     pointer.deltaY = correctDeltaY(pointer.texcoordY - pointer.prevTexcoordY);
     pointer.moved = Math.abs(pointer.deltaX) > 0 || Math.abs(pointer.deltaY) > 0;
+    if (pointer.moved) pointer.lastMoveTime = Date.now();
 }
 
 function updatePointerUpData (pointer) {
