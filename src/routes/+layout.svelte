@@ -26,6 +26,13 @@
 		mobileMenuOpen = false;
 	});
 
+	// Match on a normalised path: a trailing slash or a direct .html hit would
+	// otherwise silently drop the current-page marker.
+	function isCurrent(href: string) {
+		const path = page.url.pathname.replace(/\.html$/, '').replace(/\/+$/, '');
+		return (path || '/') === href;
+	}
+
 	// Lock the page behind the overlay. Parking the body at a negative offset is the
 	// only variant iOS Safari honours; anything else lets the page scroll underneath
 	// and drops you at the top on close.
@@ -181,8 +188,8 @@
             <a
               href={link.href}
               class="menu-link text-dark"
-              class:menu-link-active={page.url.pathname === link.href}
-              aria-current={page.url.pathname === link.href ? 'page' : undefined}
+              class:menu-link-active={isCurrent(link.href)}
+              aria-current={isCurrent(link.href) ? 'page' : undefined}
             >
               {link.label}
             </a>
