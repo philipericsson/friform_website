@@ -1,14 +1,99 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { afterNavigate } from '$app/navigation';
+	import { page } from '$app/state';
 	import '../app.css';
 
+	const navLinks = [
+		{ href: '/', label: 'Home' },
+		{ href: '/work', label: 'Work' },
+		{ href: '/contact', label: 'Contact' }
+	];
+
 	let { children } = $props();
+	let triggerEl: HTMLButtonElement | undefined = $state();
+	let headerEl: HTMLElement | undefined = $state();
+	let menuEl: HTMLElement | undefined = $state();
 	let mobileMenuOpen = $state(false);
 	let headerHidden = $state(false);
 	let logoCollapsed = $state(false);
 
 	function toggleMobileMenu() {
 		mobileMenuOpen = !mobileMenuOpen;
+		// The trigger is only reachable when the header is showing, but opening the
+		// menu should pin it there regardless of where the scroll handler left it.
+		if (mobileMenuOpen) headerHidden = false;
+	}
+
+	afterNavigate(() => {
+		mobileMenuOpen = false;
+	});
+
+	// Match on a normalised path: a trailing slash or a direct .html hit would
+	// otherwise silently drop the current-page marker.
+	function isCurrent(href: string) {
+		const path = page.url.pathname.replace(/\.html$/, '').replace(/\/+$/, '');
+		return (path || '/') === href;
+	}
+
+	// Lock the page behind the overlay. Parking the body at a negative offset is the
+	// only variant iOS Safari honours; anything else lets the page scroll underneath
+	// and drops you at the top on close.
+	let savedScrollY = 0;
+
+	$effect(() => {
+		const body = document.body;
+		if (mobileMenuOpen) {
+			savedScrollY = window.scrollY;
+			body.style.position = 'fixed';
+			body.style.top = `-${savedScrollY}px`;
+			body.style.left = '0';
+			body.style.right = '0';
+			return () => {
+				body.style.position = '';
+				body.style.top = '';
+				body.style.left = '';
+				body.style.right = '';
+				window.scrollTo(0, savedScrollY);
+			};
+		}
+	});
+
+	function closeMenu() {
+		mobileMenuOpen = false;
+		triggerEl?.focus();
+	}
+
+	function handleKeydown(event: KeyboardEvent) {
+		if (!mobileMenuOpen) return;
+
+		if (event.key === 'Escape') {
+			closeMenu();
+			return;
+		}
+
+		if (event.key !== 'Tab') return;
+
+		// The header stays visible above the overlay, so its trigger and logo are part
+		// of the menu's surface and belong in the cycle. Zero-width entries are the
+		// desktop nav links, which are display:none at this breakpoint.
+		const focusable = [
+			...(headerEl?.querySelectorAll<HTMLElement>('a, button') ?? []),
+			...(menuEl?.querySelectorAll<HTMLElement>('a') ?? [])
+		].filter((el) => el.getBoundingClientRect().width > 0);
+		if (focusable.length === 0) return;
+
+		const first = focusable[0];
+		const last = focusable[focusable.length - 1];
+		const active = document.activeElement;
+
+		if (event.shiftKey && (active === first || !focusable.includes(active as HTMLElement))) {
+			event.preventDefault();
+			last.focus();
+		} else if (!event.shiftKey && active === last) {
+			event.preventDefault();
+			first.focus();
+		}
 	}
 
 	onMount(() => {
@@ -57,16 +142,28 @@
 			}
 		}
 
+		// The menu only exists below md. Crossing that breakpoint while it is open --
+		// rotating a large phone to landscape -- would hide it and its close button by
+		// CSS while the body stayed scroll-locked, leaving no way back.
+		const desktopQuery = window.matchMedia('(min-width: 768px)');
+		function closeOnDesktop(event: MediaQueryListEvent) {
+			if (event.matches) mobileMenuOpen = false;
+		}
+		desktopQuery.addEventListener('change', closeOnDesktop);
+
 		window.addEventListener('scroll', onScroll, { passive: true });
 		return () => {
 			window.removeEventListener('scroll', onScroll);
+			desktopQuery.removeEventListener('change', closeOnDesktop);
 			clearTimeout(collapseTimer);
 		};
 	});
 </script>
 
+<svelte:window onkeydown={handleKeydown} />
+
 <div class="min-h-screen bg-light">
-  <header class="fixed top-0 left-0 w-full z-50 header-slide" class:header-hidden={headerHidden}>
+  <header bind:this={headerEl} class="fixed top-0 left-0 w-full z-50 header-slide" class:header-hidden={headerHidden}>
     <div class="container mx-auto py-2 px-4">
       <nav class="flex items-center justify-between">
         <!-- Left navigation (desktop) -->
@@ -76,7 +173,14 @@
         </div>
 
         <!-- Mobile menu button -->
-        <button class="md:hidden text-dark p-2 focus:outline-none" onclick={toggleMobileMenu} aria-label="Toggle menu">
+        <button
+          bind:this={triggerEl}
+          class="menu-trigger md:hidden text-dark flex items-center justify-center"
+          onclick={toggleMobileMenu}
+          aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+          aria-expanded={mobileMenuOpen}
+          aria-controls="mobile-menu"
+        >
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
             {#if mobileMenuOpen}
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -86,15 +190,15 @@
           </svg>
         </button>
 
-        <!-- Center logo -->
-        <div class="flex-1 flex justify-center">
+        <!-- Logo: right-aligned on mobile, centered from md up -->
+        <div class="flex-1 flex justify-end md:justify-center">
           <a href="/" class="flex items-center cursor-pointer" aria-label="Friform home">
             <picture>
               <source srcset="/images/optimized/mobile/logo.webp" media="(max-width: 767px)" type="image/webp">
               <source srcset="/images/optimized/desktop/logo.webp" media="(min-width: 768px)" type="image/webp">
               <img src="/images/logo.png" alt="" class="h-12 w-auto shrink-0" />
             </picture>
-            <span class="logo-wordmark text-2xl font-bold tracking-tight" class:logo-wordmark-collapsed={logoCollapsed}>FRIFORM</span>
+            <span class="logo-wordmark text-2xl font-bold tracking-tight" class:logo-wordmark-collapsed={logoCollapsed && !mobileMenuOpen}>FRIFORM</span>
           </a>
         </div>
 
@@ -102,28 +206,37 @@
         <div class="hidden md:flex space-x-8 flex-1 justify-end">
           <a href="/contact" class="hover:underline font-medium">Contact</a>
         </div>
-
-        <!-- Invisible placeholder on mobile to balance the hamburger menu -->
-        <div class="md:hidden w-6"></div>
       </nav>
     </div>
-    
-    <!-- Mobile menu (slide down when open) -->
-    {#if mobileMenuOpen}
-      <div class="md:hidden bg-light border-t border-black/10 animate-slideDown">
-        <div class="container mx-auto py-4 px-4">
-          <div class="flex flex-col space-y-4">
-            <a href="/" class="hover:underline font-medium py-2" onclick={toggleMobileMenu}>Home</a>
-            <a href="/work" class="hover:underline font-medium py-2" onclick={toggleMobileMenu}>Work</a>
-            <a href="/contact" class="hover:underline font-medium py-2" onclick={toggleMobileMenu}>Contact</a>
-          </div>
-        </div>
-      </div>
-    {/if}
   </header>
+
+  <!-- Mobile menu: a full-viewport page under the header, not an overlay on top of it -->
+  <div
+    bind:this={menuEl}
+    id="mobile-menu"
+    class="mobile-menu bg-light md:hidden"
+    class:mobile-menu-open={mobileMenuOpen}
+  >
+    <div class="container mx-auto px-4">
+      <ul class="menu-list">
+        {#each navLinks as link, i (link.href)}
+          <li style="--i: {i}">
+            <a
+              href={link.href}
+              class="menu-link text-dark"
+              class:menu-link-active={isCurrent(link.href)}
+              aria-current={isCurrent(link.href) ? 'page' : undefined}
+            >
+              {link.label}
+            </a>
+          </li>
+        {/each}
+      </ul>
+    </div>
+  </div>
   
   <!-- Spacer to prevent content from being hidden behind fixed header -->
-  <div class="h-20"></div>
+  <div class="header-spacer"></div>
   
   <main>
 	{@render children()}
@@ -140,6 +253,87 @@
 </div>
 
 <style>
+  .menu-trigger {
+    /* rem, so the target grows with the reader's font-size setting */
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    margin-left: -0.5rem;
+  }
+
+  .mobile-menu {
+    position: fixed;
+    inset: 0;
+    min-height: 100svh;
+    z-index: 40;
+    padding-top: var(--header-h);
+    overflow-y: auto;
+    visibility: hidden;
+    opacity: 0;
+    /* Opens instantly so the ground is opaque before the items move; fades on close. */
+    transition: opacity 0.2s ease, visibility 0s linear 0.2s;
+  }
+
+  .mobile-menu-open {
+    visibility: visible;
+    opacity: 1;
+    transition: none;
+  }
+
+  .menu-list {
+    font-size: clamp(2.25rem, 12vw, 3.5rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.35;
+    /* em, so the offset tracks the fluid type rather than a fixed gap */
+    margin-top: 0.3em;
+  }
+
+  .menu-list li {
+    opacity: 0;
+    transform: translateY(0.2em);
+  }
+
+  .mobile-menu-open .menu-list li {
+    animation: menuItemIn 0.4s ease forwards;
+    animation-delay: calc(var(--i) * 60ms);
+  }
+
+  @keyframes menuItemIn {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .menu-link {
+    display: inline-block;
+    text-decoration: none;
+  }
+
+  .menu-link-active {
+    text-decoration: underline;
+    /* em keeps the rule hairline-thin relative to whatever size the type resolves to */
+    text-decoration-thickness: 0.045em;
+    text-underline-offset: 0.1em;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mobile-menu {
+      transition: none;
+    }
+
+    .menu-list li,
+    .mobile-menu-open .menu-list li {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .header-spacer {
+    height: var(--header-h);
+  }
+
   .header-slide {
     transform: translateY(0);
     transition: transform 0.3s ease;
