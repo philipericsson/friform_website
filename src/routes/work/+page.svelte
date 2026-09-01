@@ -6,7 +6,7 @@
 <div class="bg-light min-h-[60svh] flex items-center pt-12">
   <div class="container mx-auto px-4">
     <div class="max-w-4xl mx-auto">
-      <h1 class="text-4xl md:text-6xl font-bold mb-16">Selected Projects</h1>
+      <h1 class="text-[clamp(2rem,9.16vw,3.75rem)] md:text-6xl leading-[1.11] md:leading-[1.06] tracking-[-0.02em] font-bold mb-16">Selected Projects</h1>
 
       <div class="grid md:grid-cols-2 gap-8 mt-12">
         <div class="bg-light p-6">

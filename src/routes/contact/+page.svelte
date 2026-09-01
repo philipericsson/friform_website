@@ -233,7 +233,7 @@
 <div class="hero-nyc min-h-[50svh] flex items-center relative overflow-hidden">
   <div class="hero-nyc-overlay absolute inset-0"></div>
   <div class="container mx-auto px-4 relative">
-    <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold text-white">
+    <h1 class="text-[clamp(2rem,9.16vw,3.75rem)] md:text-6xl lg:text-7xl leading-[1.11] md:leading-[1.06] lg:leading-[1.06] tracking-[-0.02em] font-bold text-white">
       GET IN<br />
       TOUCH.
     </h1>
