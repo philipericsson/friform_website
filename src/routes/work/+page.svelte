@@ -3,18 +3,12 @@
   <meta name="description" content="Portfolio of work from Friform, a technology studio based in NYC">
 </svelte:head>
 
-<div class="bg-light pt-12 pb-12">
+<div class="bg-light min-h-[60svh] flex items-center pt-12">
   <div class="container mx-auto px-4">
     <div class="max-w-4xl mx-auto">
-      <h1 class="text-4xl md:text-6xl font-bold">Selected Projects</h1>
-    </div>
-  </div>
-</div>
+      <h1 class="text-4xl md:text-6xl font-bold mb-16">Selected Projects</h1>
 
-<section class="bg-gray py-16 mb-[-5rem]">
-  <div class="container mx-auto px-4">
-    <div class="max-w-4xl mx-auto">
-      <div class="grid md:grid-cols-2 gap-8">
+      <div class="grid md:grid-cols-2 gap-8 mt-12">
         <div class="bg-light p-6">
           <picture class="block aspect-video mb-4">
             <source srcset="/images/optimized/mobile/coins-mobile.webp" media="(max-width: 767px)" type="image/webp">
@@ -72,4 +66,4 @@
       </div>
     </div>
   </div>
-</section>
+</div>
