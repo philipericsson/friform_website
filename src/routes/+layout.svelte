@@ -11,6 +11,9 @@
 	];
 
 	let { children } = $props();
+	let triggerEl: HTMLButtonElement | undefined = $state();
+	let headerEl: HTMLElement | undefined = $state();
+	let menuEl: HTMLElement | undefined = $state();
 	let mobileMenuOpen = $state(false);
 	let headerHidden = $state(false);
 	let logoCollapsed = $state(false);
@@ -56,9 +59,40 @@
 		}
 	});
 
+	function closeMenu() {
+		mobileMenuOpen = false;
+		triggerEl?.focus();
+	}
+
 	function handleKeydown(event: KeyboardEvent) {
-		if (event.key === 'Escape' && mobileMenuOpen) {
-			mobileMenuOpen = false;
+		if (!mobileMenuOpen) return;
+
+		if (event.key === 'Escape') {
+			closeMenu();
+			return;
+		}
+
+		if (event.key !== 'Tab') return;
+
+		// The header stays visible above the overlay, so its trigger and logo are part
+		// of the menu's surface and belong in the cycle. Zero-width entries are the
+		// desktop nav links, which are display:none at this breakpoint.
+		const focusable = [
+			...(headerEl?.querySelectorAll<HTMLElement>('a, button') ?? []),
+			...(menuEl?.querySelectorAll<HTMLElement>('a') ?? [])
+		].filter((el) => el.getBoundingClientRect().width > 0);
+		if (focusable.length === 0) return;
+
+		const first = focusable[0];
+		const last = focusable[focusable.length - 1];
+		const active = document.activeElement;
+
+		if (event.shiftKey && (active === first || !focusable.includes(active as HTMLElement))) {
+			event.preventDefault();
+			last.focus();
+		} else if (!event.shiftKey && active === last) {
+			event.preventDefault();
+			first.focus();
 		}
 	}
 
@@ -129,7 +163,7 @@
 <svelte:window onkeydown={handleKeydown} />
 
 <div class="min-h-screen bg-light">
-  <header class="fixed top-0 left-0 w-full z-50 header-slide" class:header-hidden={headerHidden}>
+  <header bind:this={headerEl} class="fixed top-0 left-0 w-full z-50 header-slide" class:header-hidden={headerHidden}>
     <div class="container mx-auto py-2 px-4">
       <nav class="flex items-center justify-between">
         <!-- Left navigation (desktop) -->
@@ -140,6 +174,7 @@
 
         <!-- Mobile menu button -->
         <button
+          bind:this={triggerEl}
           class="menu-trigger md:hidden text-dark flex items-center justify-center"
           onclick={toggleMobileMenu}
           aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
@@ -163,7 +198,7 @@
               <source srcset="/images/optimized/desktop/logo.webp" media="(min-width: 768px)" type="image/webp">
               <img src="/images/logo.png" alt="" class="h-12 w-auto shrink-0" />
             </picture>
-            <span class="logo-wordmark text-2xl font-bold tracking-tight" class:logo-wordmark-collapsed={logoCollapsed}>FRIFORM</span>
+            <span class="logo-wordmark text-2xl font-bold tracking-tight" class:logo-wordmark-collapsed={logoCollapsed && !mobileMenuOpen}>FRIFORM</span>
           </a>
         </div>
 
@@ -177,6 +212,7 @@
 
   <!-- Mobile menu: a full-viewport page under the header, not an overlay on top of it -->
   <div
+    bind:this={menuEl}
     id="mobile-menu"
     class="mobile-menu bg-light md:hidden"
     class:mobile-menu-open={mobileMenuOpen}
