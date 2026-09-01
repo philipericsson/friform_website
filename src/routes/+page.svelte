@@ -37,7 +37,7 @@
   </div>
 </div>
 
-<section class="py-24 bg-gray mb-[-5rem]">
+<section class="pt-[6svh] pb-24 bg-gray mb-[-5rem]">
   <div class="container mx-auto px-4">
     <div class="max-w-4xl mx-auto">
       <h2 class="text-3xl md:text-5xl font-bold mb-16">
