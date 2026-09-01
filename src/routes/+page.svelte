@@ -18,7 +18,7 @@
   <meta name="description" content="Friform is a technology studio based in NYC">
 </svelte:head>
 
-<div class="hero-fluid bg-light min-h-[100svh] flex items-center">
+<div class="hero-fluid bg-light min-h-[92svh] flex items-center">
   <canvas id="fluid-canvas" class="fluid-canvas"></canvas>
   <div class="container mx-auto px-4 pt-0">
     <div class="max-w-4xl">
