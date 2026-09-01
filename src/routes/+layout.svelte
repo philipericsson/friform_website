@@ -171,7 +171,7 @@
           {#each navLinks as link (link.href)}
             <a
               href={link.href}
-              class="nav-link font-medium"
+              class="nav-link text-xl font-medium tracking-[-0.02em]"
               class:nav-link-current={isCurrent(link.href)}
               aria-current={isCurrent(link.href) ? 'page' : undefined}
             >
@@ -371,5 +371,15 @@
     max-width: 0;
     margin-left: 0;
     opacity: 0;
+  }
+
+  /* No menu to open on desktop, so the wordmark would never come back once it
+     collapsed. Above md it simply stays out, holding the right corner. */
+  @media (min-width: 768px) {
+    .logo-wordmark-collapsed {
+      max-width: 12rem;
+      margin-left: 0.6rem;
+      opacity: 1;
+    }
   }
 </style>
