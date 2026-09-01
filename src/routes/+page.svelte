@@ -22,10 +22,10 @@
   <canvas id="fluid-canvas" class="fluid-canvas"></canvas>
   <div class="container mx-auto px-4 pt-0">
     <div class="max-w-4xl">
-      <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold mb-8">
+      <h1 class="text-[clamp(2.25rem,12vw,3.75rem)] md:text-6xl lg:text-7xl font-bold mb-8">
         FREE.<br />
-        FORM. <span class="text-lg md:text-2xl lg:text-3xl font-normal italic opacity-50">[EN]</span><br />
-        FRIFORM. <span class="text-lg md:text-2xl lg:text-3xl font-normal italic opacity-50">[SV]</span>
+        FORM. <span class="text-[0.42em] md:text-2xl lg:text-3xl font-normal italic opacity-50">[EN]</span><br />
+        FRIFORM. <span class="text-[0.42em] md:text-2xl lg:text-3xl font-normal italic opacity-50">[SV]</span>
       </h1>
       <a
         href="/contact"
