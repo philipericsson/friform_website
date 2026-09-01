@@ -84,8 +84,8 @@
     position: relative;
     z-index: 0;
     overflow: hidden;
-    margin-top: -5rem;
-    padding-top: 5rem;
+    margin-top: calc(-1 * var(--header-h));
+    padding-top: var(--header-h);
   }
 
   .fluid-canvas {

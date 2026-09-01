@@ -15,5 +15,11 @@
 }
 
 @tailwind base;
+
+/* Single source of truth for the fixed header's footprint: the spacer below it,
+   the hero's pull-up, and the mobile menu's top offset all derive from this. */
+:root {
+  --header-h: 5rem;
+}
 @tailwind components;
 @tailwind utilities;
