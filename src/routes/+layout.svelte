@@ -101,9 +101,19 @@
 			}
 		}
 
+		// The menu only exists below md. Crossing that breakpoint while it is open --
+		// rotating a large phone to landscape -- would hide it and its close button by
+		// CSS while the body stayed scroll-locked, leaving no way back.
+		const desktopQuery = window.matchMedia('(min-width: 768px)');
+		function closeOnDesktop(event: MediaQueryListEvent) {
+			if (event.matches) mobileMenuOpen = false;
+		}
+		desktopQuery.addEventListener('change', closeOnDesktop);
+
 		window.addEventListener('scroll', onScroll, { passive: true });
 		return () => {
 			window.removeEventListener('scroll', onScroll);
+			desktopQuery.removeEventListener('change', closeOnDesktop);
 			clearTimeout(collapseTimer);
 		};
 	});
