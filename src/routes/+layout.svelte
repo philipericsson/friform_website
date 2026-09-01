@@ -171,7 +171,7 @@
           {#each navLinks as link (link.href)}
             <a
               href={link.href}
-              class="nav-link text-xl font-medium tracking-[-0.02em]"
+              class="nav-link text-2xl font-medium tracking-[-0.02em]"
               class:nav-link-current={isCurrent(link.href)}
               aria-current={isCurrent(link.href) ? 'page' : undefined}
             >
