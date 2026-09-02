@@ -24,8 +24,8 @@
     <div class="max-w-4xl">
       <h1 class="text-[clamp(2rem,9.16vw,3.75rem)] md:text-6xl lg:text-7xl leading-[1.11] md:leading-[1.06] lg:leading-[1.06] tracking-[-0.02em] font-bold mb-8">
         FREE.<br />
-        FORM. <span class="text-lg md:text-2xl lg:text-3xl font-normal italic opacity-50">[EN]</span><br />
-        FRIFORM. <span class="text-lg md:text-2xl lg:text-3xl font-normal italic opacity-50">[SV]</span>
+        FORM. <span class="text-lg md:text-2xl lg:text-3xl font-normal italic opacity-70">[EN]</span><br />
+        FRIFORM. <span class="text-lg md:text-2xl lg:text-3xl font-normal italic opacity-70">[SV]</span>
       </h1>
       <a
         href="/contact"

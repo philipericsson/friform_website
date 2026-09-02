@@ -245,15 +245,26 @@
     <div class="max-w-4xl mx-auto">
       <div class="grid md:grid-cols-2 gap-12">
         <div>
-          <div class="mb-4">
-            <p><span class="font-bold">Friform</span> <span class="italic opacity-60">[Swedish]</span></p>
-            <p class="italic">Having or being an irregular or asymmetrical shape or design.</p>
+          <p class="section-label">The name</p>
+
+          <div class="definition">
+            <p class="definition-word">Friform <span class="definition-tag">[Swedish]</span></p>
+            <p class="definition-gloss">Having or being an irregular or asymmetrical shape or design.</p>
           </div>
-          <p class="mb-4">In 1933, Finnish architect Alvar Aalto and furniture maker Otto Korhonen solved a technical problem: how to bend solid wood into a leg cheap enough to mass-produce. Their solution, slicing the wood into thin strips and gluing it back together as it bent, became the L-leg, the foundation of Aalto's Stool 60, a design that hasn't needed to change in ninety years. That pairing, technical rigor and design worth living with, is so central to Friform's philosophy that we built our logo around it.</p>
-          <p>New York, NY</p>
+
+          <p class="body-copy">In 1933, Finnish architect Alvar Aalto and furniture maker Otto Korhonen solved a technical problem: how to bend solid wood into a leg cheap enough to mass-produce. Their solution, slicing the wood into thin strips and gluing it back together as it bent, became the L-leg, the foundation of Aalto's Stool 60, a design that hasn't needed to change in ninety years.</p>
+
+          <p class="statement">That pairing, technical rigor and design worth living with, is so central to Friform's philosophy that we built our logo around it.</p>
+
+          <div class="colophon">
+            <p class="section-label">Studio</p>
+            <p class="body-copy">New York, NY</p>
+          </div>
         </div>
 
         <div>
+          <p class="section-label">Say hello</p>
+
           {#if formSubmitResult?.success}
             <div class="bg-dark text-light px-6 py-4 mb-6 animate-slideDown">
               <p class="font-medium text-lg">Message sent. We'll be in touch.</p>
@@ -379,7 +390,7 @@
               novalidate
             >
               <div>
-                <label for="name" class="block mb-1">Name</label>
+                <label for="name" class="field-label">Name</label>
                 <input 
                   type="text" 
                   id="name" 
@@ -391,7 +402,7 @@
                 />
               </div>
               <div>
-                <label for="email" class="block mb-1">Email</label>
+                <label for="email" class="field-label">Email</label>
                 <input 
                   type="email" 
                   id="email" 
@@ -403,7 +414,7 @@
                 />
               </div>
               <div>
-                <label for="message" class="block mb-1">Message</label>
+                <label for="message" class="field-label">Message</label>
                 <textarea 
                   id="message" 
                   name="message" 
@@ -449,6 +460,88 @@
 </div>
 
 <style>
+  /* Small tracked label, the device that gives each column a start point. Both
+     columns carry one so they share structure. */
+  .section-label,
+  .field-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  /* 0.45 resolved to 2.75:1 against white, under the 4.5:1 minimum for text at
+     this size. 0.7 gives 5.9:1. */
+  .section-label {
+    opacity: 0.7;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Same treatment, but a little stronger: these are doing a job rather than
+     marking a section, and they need to stay readable while filling the form. */
+  .field-label {
+    display: block;
+    opacity: 0.85;
+    margin-bottom: 0.5rem;
+  }
+
+  /* The definition is the column's anchor, so it is set at display size using
+     the same recipe as the headings rather than at body size. */
+  .definition {
+    padding-bottom: 1.5rem;
+    border-bottom: 0.0625rem solid rgba(34, 34, 34, 0.15);
+    margin-bottom: 1.5rem;
+  }
+
+  .definition-word {
+    font-size: clamp(1.75rem, 5vw, 2.25rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+
+  .definition-tag {
+    /* em, so the tag keeps its proportion to the word as that scales */
+    font-size: 0.4em;
+    font-weight: 400;
+    font-style: italic;
+    /* 0.5 resolved to 3.15:1 against white, under the 4.5:1 minimum at this
+       size. 0.7 gives 5.92:1. */
+    opacity: 0.7;
+    letter-spacing: 0;
+  }
+
+  .definition-gloss {
+    font-style: italic;
+    font-size: 1.125rem;
+    line-height: 1.5;
+    margin-top: 0.5rem;
+    opacity: 0.75;
+  }
+
+  .body-copy {
+    font-size: 1.0625rem;
+    line-height: 1.6;
+  }
+
+  /* The thesis of the page, previously the tail of an 84-word block. */
+  .statement {
+    font-size: 1.25rem;
+    line-height: 1.45;
+    letter-spacing: -0.01em;
+    padding-top: 1.5rem;
+    border-top: 0.0625rem solid rgba(34, 34, 34, 0.15);
+    margin-top: 1.5rem;
+  }
+
+  .colophon {
+    margin-top: 2.5rem;
+  }
+
+  .colophon .section-label {
+    margin-bottom: 0.375rem;
+  }
+
   .hero-nyc {
     background-image: url('/images/optimized/mobile/nyc-mobile.webp');
     background-size: cover;
