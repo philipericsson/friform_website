@@ -162,7 +162,7 @@
 
 <svelte:window onkeydown={handleKeydown} />
 
-<div class="min-h-screen bg-light">
+<div class="min-h-screen bg-light text-dark">
   <header bind:this={headerEl} class="fixed top-0 left-0 w-full z-50 header-slide" class:header-hidden={headerHidden}>
     <div class="container mx-auto py-2 px-4">
       <nav class="flex items-center justify-between">
