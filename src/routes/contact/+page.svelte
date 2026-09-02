@@ -505,7 +505,9 @@
     font-size: 0.4em;
     font-weight: 400;
     font-style: italic;
-    opacity: 0.5;
+    /* 0.5 resolved to 3.15:1 against white, under the 4.5:1 minimum at this
+       size. 0.7 gives 5.92:1. */
+    opacity: 0.7;
     letter-spacing: 0;
   }
 
