@@ -245,11 +245,11 @@
 	{@render children()}
   </main>
   
-  <footer class="bg-dark text-light py-6 mt-20">
-	<div class="container mx-auto px-4">
+  <footer class="bg-light text-dark border-t border-dark/15">
+	<div class="container mx-auto px-4 py-6 md:py-7">
 	  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2 text-sm">
-		<p><span class="font-bold">FRIFORM</span> — A tech studio based in NYC</p>
-		<p>&copy; {new Date().getFullYear()} Friform. All rights reserved.</p>
+		<p><span class="font-bold">FRIFORM</span> <span class="text-dark/70">— A tech studio building in New York</span></p>
+		<p class="text-dark/70">&copy; {new Date().getFullYear()} Friform. All rights reserved.</p>
 	  </div>
 	</div>
   </footer>

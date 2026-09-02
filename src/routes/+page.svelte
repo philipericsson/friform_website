@@ -37,7 +37,7 @@
   </div>
 </div>
 
-<section class="py-24 bg-gray mb-[-5rem]">
+<section class="py-24 bg-gray">
   <div class="container mx-auto px-4">
     <div class="max-w-4xl mx-auto">
       <h2 class="text-[clamp(1.75rem,7.63vw,3rem)] md:text-5xl leading-[1.2] md:leading-[1.06] tracking-[-0.02em] font-bold mb-16">

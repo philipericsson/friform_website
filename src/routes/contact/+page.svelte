@@ -234,44 +234,60 @@
   <div class="hero-nyc-overlay absolute inset-0"></div>
   <div class="container mx-auto px-4 relative">
     <h1 class="text-[clamp(2rem,9.16vw,3.75rem)] md:text-6xl lg:text-7xl leading-[1.11] md:leading-[1.06] lg:leading-[1.06] tracking-[-0.02em] font-bold text-white">
-      GET IN<br />
-      TOUCH.
+      BUILT IN<br />
+      NEW YORK.
     </h1>
   </div>
 </div>
 
-<div class="bg-light py-24">
+<section class="bg-light py-24 md:py-32">
   <div class="container mx-auto px-4">
-    <div class="max-w-4xl mx-auto">
-      <div class="grid md:grid-cols-2 gap-12">
-        <div>
-          <p class="section-label">The name</p>
+    <div class="max-w-6xl mx-auto flex flex-col gap-12 md:flex-row md:items-center md:gap-16">
+      <div class="md:flex-1">
+        <p class="section-label">The name</p>
 
-          <div class="definition">
-            <p class="definition-word"><span class="definition-headword">Fri form</span> <span class="definition-tag">[Swedish]</span></p>
-            <p class="definition-gloss">Having or being an irregular or asymmetrical shape or design.</p>
-          </div>
-
-          <p class="body-copy">In 1933, Finnish architect Alvar Aalto and furniture maker Otto Korhonen solved a technical problem: how to bend solid wood into a leg cheap enough to mass-produce. Their solution, slicing the wood into thin strips and gluing it back together as it bent, became the L-leg, the foundation of Aalto's Stool 60, a design that hasn't needed to change in ninety years.</p>
-
-          <p class="statement">That pairing, technical rigor and design worth living with, is so central to Friform's philosophy that we built our logo around it.</p>
-
-          <div class="colophon">
-            <p class="section-label">Studio</p>
-            <p class="body-copy">New York, NY</p>
-          </div>
+        <div class="definition">
+          <p class="definition-word"><span class="definition-headword">Fri form</span> <span class="definition-tag">[Swedish]</span></p>
+          <p class="definition-gloss">Having or being an irregular or asymmetrical shape or design.</p>
         </div>
 
-        <div>
-          <p class="section-label">Say hello</p>
+        <p class="body-copy">In 1933, Finnish architect Alvar Aalto and furniture maker Otto Korhonen solved a technical problem: how to bend solid wood into a leg cheap enough to mass-produce. Their solution, slicing the wood into thin strips and gluing it back together as it bent, became the L-leg, the foundation of Aalto's Stool 60, a design that hasn't needed to change in ninety years.</p>
 
+        <p class="statement">That pairing, technical rigor and design worth living with, is so central to Friform's philosophy that we built our logo around it.</p>
+      </div>
+
+      <div class="shrink-0 md:order-first md:w-[38%] lg:w-[36%]">
+        <picture>
+          <source srcset="/images/optimized/mobile/stool-mobile.webp" media="(max-width: 767px)" type="image/webp">
+          <source srcset="/images/optimized/desktop/stool.webp" media="(min-width: 768px)" type="image/webp">
+          <img
+            src="/images/optimized/desktop/stool.webp"
+            alt="Line drawing of Alvar Aalto's three-legged Stool 60, the object the Friform logo is drawn from"
+            class="mx-auto w-full max-w-[15rem] md:max-w-none"
+            loading="lazy"
+          />
+        </picture>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="bg-gray py-24 md:py-32">
+  <div class="container mx-auto px-4">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-[clamp(1.875rem,8vw,3.25rem)] md:text-5xl lg:text-6xl leading-[1.08] md:leading-[1.04] tracking-[-0.02em] font-bold mb-12">
+        SAY<br />
+        HELLO.
+      </h2>
+
+      <div class="form-shell">
           {#if formSubmitResult?.success}
-            <div class="bg-dark text-light px-6 py-4 mb-6 animate-slideDown">
+            <div class="bg-dark text-light px-6 py-4 animate-slideDown">
               <p class="font-medium text-lg">Message sent. We'll be in touch.</p>
             </div>
           {:else}
-            <form 
-              class="space-y-4" 
+            <form
+              class="space-y-5"
               id="contact-form"
               on:submit|preventDefault={(e) => {
                 // Get the form element
@@ -389,49 +405,51 @@
               }}
               novalidate
             >
-              <div>
-                <label for="name" class="field-label">Name</label>
-                <input 
-                  type="text" 
-                  id="name" 
-                  name="from_name" 
-                  class="w-full p-2 border border-gray" 
-                  value={formSubmitResult?.formData?.name || ''}
-                  required
-                  data-lpignore="true"
-                />
-              </div>
-              <div>
-                <label for="email" class="field-label">Email</label>
-                <input 
-                  type="email" 
-                  id="email" 
-                  name="email" 
-                  class="w-full p-2 border border-gray" 
-                  value={formSubmitResult?.formData?.email || ''}
-                  required
-                  data-lpignore="true"
-                />
+              <div class="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label for="name" class="field-label">Name</label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="from_name"
+                    class="form-field"
+                    value={formSubmitResult?.formData?.name || ''}
+                    required
+                    data-lpignore="true"
+                  />
+                </div>
+                <div>
+                  <label for="email" class="field-label">Email</label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    class="form-field"
+                    value={formSubmitResult?.formData?.email || ''}
+                    required
+                    data-lpignore="true"
+                  />
+                </div>
               </div>
               <div>
                 <label for="message" class="field-label">Message</label>
-                <textarea 
-                  id="message" 
-                  name="message" 
-                  rows="4" 
-                  class="w-full p-2 border border-gray"
+                <textarea
+                  id="message"
+                  name="message"
+                  rows="5"
+                  class="form-field"
                   required
                   data-lpignore="true"
                 >{formSubmitResult?.formData?.message || ''}</textarea>
               </div>
-              
+
               {#if formSubmitResult?.error}
-                <div class="bg-red-50 border border-red-300 text-red-800 px-6 py-4 rounded-md mb-6">
+                <div class="bg-red-50 border border-red-300 text-red-800 px-6 py-4 rounded-md">
                   <p class="font-medium">{formSubmitResult.error}</p>
                 </div>
               {/if}
-              
-              <div class="mb-6">
+
+              <div>
                 {#if recaptchaLoaded}
                   <!-- Container for explicit reCAPTCHA rendering without border or label -->
                   <div id="recaptcha-container" class="inline-block"></div>
@@ -440,7 +458,7 @@
                     Verification failed to load. This is usually caused by an ad blocker or privacy extension. Please disable it for this site and reload the page.
                   </div>
                 {:else}
-                  <div class="p-2 bg-gray-50 text-sm text-gray-500 animate-pulse">Loading verification...</div>
+                  <div class="p-2 bg-light border border-dark/10 text-sm text-dark/50 animate-pulse">Loading verification...</div>
                 {/if}
               </div>
               
@@ -453,11 +471,10 @@
               </button>
             </form>
           {/if}
-        </div>
       </div>
     </div>
   </div>
-</div>
+</section>
 
 <style>
   /* Small tracked label, the device that gives each column a start point. Both
@@ -540,12 +557,23 @@
     margin-top: 1.5rem;
   }
 
-  .colophon {
-    margin-top: 2.5rem;
+  /* The form keeps a comfortable single-column measure inside the wider band,
+     left-aligned under the heading rather than centred. */
+  .form-shell {
+    max-width: 32rem;
   }
 
-  .colophon .section-label {
-    margin-bottom: 0.375rem;
+  .form-field {
+    width: 100%;
+    padding: 0.75rem;
+    background: #ffffff;
+    border: 0.0625rem solid rgba(34, 34, 34, 0.15);
+    transition: border-color 0.15s ease;
+  }
+
+  .form-field:focus {
+    outline: none;
+    border-color: #222222;
   }
 
   .hero-nyc {
