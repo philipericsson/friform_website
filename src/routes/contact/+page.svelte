@@ -248,7 +248,7 @@
           <p class="section-label">The name</p>
 
           <div class="definition">
-            <p class="definition-word">Friform <span class="definition-tag">[Swedish]</span></p>
+            <p class="definition-word"><span class="definition-headword">Fri form</span> <span class="definition-tag">[Swedish]</span></p>
             <p class="definition-gloss">Having or being an irregular or asymmetrical shape or design.</p>
           </div>
 
@@ -498,6 +498,12 @@
     font-weight: 700;
     letter-spacing: -0.02em;
     line-height: 1.15;
+  }
+
+  /* Two words, so keep them on one line: breaking after "Fri" would read as a
+     hyphenless split rather than a headword. */
+  .definition-headword {
+    white-space: nowrap;
   }
 
   .definition-tag {
