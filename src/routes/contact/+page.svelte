@@ -390,7 +390,7 @@
               novalidate
             >
               <div>
-                <label for="name" class="block mb-1">Name</label>
+                <label for="name" class="field-label">Name</label>
                 <input 
                   type="text" 
                   id="name" 
@@ -402,7 +402,7 @@
                 />
               </div>
               <div>
-                <label for="email" class="block mb-1">Email</label>
+                <label for="email" class="field-label">Email</label>
                 <input 
                   type="email" 
                   id="email" 
@@ -414,7 +414,7 @@
                 />
               </div>
               <div>
-                <label for="message" class="block mb-1">Message</label>
+                <label for="message" class="field-label">Message</label>
                 <textarea 
                   id="message" 
                   name="message" 
@@ -462,13 +462,27 @@
 <style>
   /* Small tracked label, the device that gives each column a start point. Both
      columns carry one so they share structure. */
-  .section-label {
+  .section-label,
+  .field-label {
     font-size: 0.75rem;
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.12em;
-    opacity: 0.45;
+  }
+
+  /* 0.45 resolved to 2.75:1 against white, under the 4.5:1 minimum for text at
+     this size. 0.7 gives 5.9:1. */
+  .section-label {
+    opacity: 0.7;
     margin-bottom: 1.5rem;
+  }
+
+  /* Same treatment, but a little stronger: these are doing a job rather than
+     marking a section, and they need to stay readable while filling the form. */
+  .field-label {
+    display: block;
+    opacity: 0.85;
+    margin-bottom: 0.5rem;
   }
 
   /* The definition is the column's anchor, so it is set at display size using
